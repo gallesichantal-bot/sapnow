@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create *)",
+      "Bash(sed -i '' \"s|from '../../context/AppContext'|from '../context/AppContext'|g\" *.tsx)",
+      "Bash(sed -i '' \"s|from '../../data/products'|from '../data/products'|g\" *.tsx)",
+      "Bash(sed -i '' \"s|from '../../data/customer'|from '../data/customer'|g\" *.tsx)",
+      "Bash(sed -i '' \"s|from '../../types'|from '../types'|g\" *.tsx)",
+      "Bash(sed -i '' \"s|from '../catalog/ProductCard'|from '../components/catalog/ProductCard'|g\" *.tsx)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(agent-browser open *)",
+      "Bash(agent-browser wait *)",
+      "Bash(agent-browser screenshot *)",
+      "Bash(npx agent-browser *)",
+      "Bash(agent-browser install *)",
+      "Bash(agent-browser set *)",
+      "Bash(agent-browser snapshot *)",
+      "Bash(agent-browser click *)",
+      "Bash(agent-browser fill *)",
+      "Bash(agent-browser press *)",
+      "Bash(agent-browser scroll *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173)",
+      "Bash(wait)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://images.unsplash.com/tWTsMVAwF0s?w=600&h=800&fit=crop&q=80\")",
+      "Bash(agent-browser get *)",
+      "Bash(agent-browser network *)",
+      "Bash(agent-browser --session unsplash-find open \"https://unsplash.com/s/photos/women-blazer-jacket\")",
+      "Bash(agent-browser --session unsplash-find wait --load networkidle)",
+      "Bash(agent-browser --session unsplash-find scroll down 800)",
+      "Bash(agent-browser --session unsplash-find wait 2000)",
+      "Bash(agent-browser --session unsplash-find network requests)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:5173\")",
+      "Bash(lsof -i :5173 -sTCP:LISTEN)"
+    ]
+  }
+}

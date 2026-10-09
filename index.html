@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PEAKLINE | Performance Reimagined</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #060608;
+      --surface: #0e0e12;
+      --surface2: #16161c;
+      --border: #1e1e28;
+      --cyan:   #00E5FF;
+      --orange: #FF6B00;
+      --purple: #9B4DFF;
+      --green:  #00FF88;
+      --pink:   #FF2D8A;
+      --white:  #FFFFFF;
+      --gray:   #7a7a88;
+      --gray2:  #44444e;
+      --font-head: 'Barlow Condensed', sans-serif;
+      --font-body: 'Barlow', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--white); font-family: var(--font-body); overflow-x: hidden; line-height: 1.5; }
+    a { text-decoration: none; color: inherit; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 2px; }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 72px;
+      background: rgba(6,6,8,.9); backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(155,77,255,.12);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 12px; font-family: var(--font-head); font-weight: 900; font-size: 22px; letter-spacing: 3px; }
+    .nav-links { display: flex; gap: 36px; list-style: none; font-family: var(--font-head); font-size: 14px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
+    .nav-links a { color: var(--gray); transition: color .2s; position: relative; padding-bottom: 4px; }
+    .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--cyan); transition: width .25s; }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-actions { display: flex; align-items: center; gap: 20px; }
+    .nav-actions button { background: none; border: none; cursor: pointer; color: var(--gray); transition: color .2s; padding: 4px; display: flex; }
+    .nav-actions button:hover { color: var(--cyan); }
+    .cart-btn { position: relative; }
+    .cart-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; border-radius: 50%; background: var(--purple); color: var(--white); font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh; position: relative; overflow: hidden;
+      display: grid; grid-template-columns: 1fr 1fr; align-items: center;
+      padding: 0 80px; padding-top: 72px;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        /* grande alone cyan a destra — il "faro" principale */
+        radial-gradient(ellipse 70% 90% at 85% 45%, rgba(0,229,255,.18) 0%, rgba(0,229,255,.04) 40%, transparent 70%),
+        /* alone viola in alto a sinistra */
+        radial-gradient(ellipse 55% 65% at 8% 20%,  rgba(155,77,255,.16) 0%, rgba(155,77,255,.04) 45%, transparent 70%),
+        /* calore arancione in basso al centro */
+        radial-gradient(ellipse 45% 55% at 50% 100%, rgba(255,107,0,.1) 0%, transparent 55%),
+        /* pink accent a destra in basso */
+        radial-gradient(ellipse 35% 40% at 95% 90%,  rgba(255,45,138,.07) 0%, transparent 60%),
+        /* base scura con sfumatura directional */
+        linear-gradient(150deg, #0e0820 0%, #060608 30%, #07060e 70%, #0c0614 100%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(155,77,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 100% 100% at 60% 40%, black 10%, transparent 85%);
+    }
+    .hero-content { position: relative; z-index: 2; padding-right: 40px; }
+    .hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-head); font-size: 12px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase; color: var(--cyan); margin-bottom: 24px; }
+    .hero-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--cyan); }
+    .hero-title { font-family: var(--font-head); font-size: clamp(72px,8vw,120px); font-weight: 900; line-height: .92; text-transform: uppercase; letter-spacing: -1px; margin-bottom: 32px; }
+    .hero-title em { font-style: italic; background: linear-gradient(90deg, var(--cyan), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
+    .hero-subtitle { font-size: 16px; font-weight: 300; color: var(--gray); max-width: 380px; line-height: 1.7; margin-bottom: 48px; }
+    .hero-ctas { display: flex; gap: 16px; align-items: center; }
+    .btn-primary { display: inline-flex; align-items: center; gap: 10px; padding: 16px 36px; background: linear-gradient(90deg, var(--cyan), #00b8ff); color: var(--bg); font-family: var(--font-head); font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; border: none; cursor: pointer; clip-path: polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px)); transition: filter .2s, transform .2s; }
+    .btn-primary:hover { filter: brightness(1.15); transform: translateY(-2px); }
+    .btn-secondary { display: inline-flex; align-items: center; gap: 10px; padding: 15px 32px; background: transparent; color: var(--white); font-family: var(--font-head); font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; border: 1px solid rgba(155,77,255,.4); cursor: pointer; clip-path: polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px)); transition: border-color .2s, color .2s; }
+    .btn-secondary:hover { border-color: var(--purple); color: var(--purple); }
+
+    .hero-visual { position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; }
+    .hero-photo-wrap {
+      position: relative; width: 100%; max-width: 580px;
+      animation: float 4.5s ease-in-out infinite;
+      filter: drop-shadow(0 24px 60px rgba(0,229,255,.22)) drop-shadow(0 0 120px rgba(155,77,255,.12));
+    }
+    @keyframes float { 0%,100%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-16px) rotate(1.5deg)} }
+    .hero-photo-wrap img { width: 100%; display: block; border-radius: 20px; filter: brightness(.75) saturate(.85); }
+    .hero-photo-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,229,255,.08) 0%, transparent 50%, rgba(155,77,255,.06) 100%);
+      mix-blend-mode: screen;
+    }
+    .hero-glow-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(ellipse, rgba(0,229,255,.07) 0%, rgba(155,77,255,.04) 50%, transparent 70%); animation: glow-pulse 3s ease-in-out infinite; pointer-events: none; z-index: -1; }
+    @keyframes glow-pulse { 0%,100%{transform:translate(-50%,-50%) scale(1);opacity:1} 50%{transform:translate(-50%,-50%) scale(1.06);opacity:.6} }
+
+    .hero-stats { position: absolute; bottom: 32px; left: 80px; right: 80px; display: flex; gap: 48px; z-index: 2; }
+    .stat-number { font-family: var(--font-head); font-size: 32px; font-weight: 900; background: linear-gradient(90deg,var(--cyan),var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height: 1; }
+    .stat-label { font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--gray2); }
+    .scroll-indicator { position: absolute; bottom: 32px; right: 80px; display: flex; align-items: center; gap: 10px; font-family: var(--font-head); font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--gray2); writing-mode: vertical-lr; z-index: 2; }
+    .scroll-line { width: 1px; height: 48px; background: linear-gradient(to bottom,var(--cyan),transparent); animation: scroll-pulse 2s ease-in-out infinite; }
+    @keyframes scroll-pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+
+    /* ── TICKER ── */
+    .ticker { background: linear-gradient(90deg,var(--cyan),var(--purple),var(--pink),var(--orange),var(--cyan)); padding: 12px 0; overflow: hidden; white-space: nowrap; }
+    .ticker-track { display: inline-flex; animation: ticker-scroll 22s linear infinite; }
+    .ticker-item { font-family: var(--font-head); font-size: 13px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--bg); padding: 0 40px; }
+    .ticker-dot { color: rgba(6,6,8,.35); padding: 0 4px; }
+    @keyframes ticker-scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+    /* ── SHARED SECTION ── */
+    .section-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 48px; }
+    .section-tag { font-family: var(--font-head); font-size: 11px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase; color: var(--cyan); margin-bottom: 8px; }
+    .section-title { font-family: var(--font-head); font-size: clamp(36px,4vw,56px); font-weight: 900; text-transform: uppercase; line-height: 1; letter-spacing: -.5px; }
+    .section-link { font-family: var(--font-head); font-size: 13px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); display: flex; align-items: center; gap: 8px; transition: gap .2s; }
+    .section-link:hover { gap: 14px; }
+
+    /* ── PRODUCTS ── */
+    .products-section {
+      padding: 100px 80px; position: relative; overflow: hidden;
+      background:
+        /* Row 1 — 4 flagship shoes */
+        radial-gradient(ellipse 22% 38% at 13%  38%, rgba(0,229,255,.08)  0%, transparent 100%),
+        radial-gradient(ellipse 22% 38% at 37%  34%, rgba(255,107,0,.07)  0%, transparent 100%),
+        radial-gradient(ellipse 22% 38% at 63%  38%, rgba(155,77,255,.07) 0%, transparent 100%),
+        radial-gradient(ellipse 22% 38% at 87%  34%, rgba(74,160,60,.07)  0%, transparent 100%),
+        /* Row 2 — new arrivals */
+        radial-gradient(ellipse 22% 38% at 13%  78%, rgba(0,229,255,.05)  0%, transparent 100%),
+        radial-gradient(ellipse 22% 38% at 37%  82%, rgba(255,45,138,.05) 0%, transparent 100%),
+        radial-gradient(ellipse 22% 38% at 63%  78%, rgba(255,107,0,.05)  0%, transparent 100%),
+        radial-gradient(ellipse 22% 38% at 87%  82%, rgba(155,77,255,.05) 0%, transparent 100%),
+        linear-gradient(180deg, #07060c 0%, #08070e 100%);
+    }
+    .products-section::before { content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:800px; height:1px; background:linear-gradient(90deg,transparent,rgba(0,229,255,.25),rgba(155,77,255,.25),transparent); }
+
+    .products-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+
+    .product-card {
+      background: var(--surface); border: 1px solid var(--border); position: relative; cursor: pointer; overflow: hidden;
+      clip-path: polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));
+      transition: transform .35s, border-color .35s, box-shadow .35s;
+    }
+    .product-card:hover { transform: translateY(-7px); }
+
+    /* per-card accent colors */
+    .card-cyan:hover  { border-color: rgba(0,229,255,.35);  box-shadow: 0 24px 56px rgba(0,229,255,.12); }
+    .card-orange:hover{ border-color: rgba(255,107,0,.35);  box-shadow: 0 24px 56px rgba(255,107,0,.12); }
+    .card-purple:hover{ border-color: rgba(155,77,255,.35); box-shadow: 0 24px 56px rgba(155,77,255,.12); }
+    .card-green:hover { border-color: rgba(74,160,60,.35);  box-shadow: 0 24px 56px rgba(74,160,60,.12); }
+    .card-pink:hover  { border-color: rgba(255,45,138,.35); box-shadow: 0 24px 56px rgba(255,45,138,.12); }
+
+    .product-card-badge { position: absolute; top: 14px; left: 14px; z-index: 5; font-family: var(--font-head); font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 4px 10px; }
+    .badge-new     { background: var(--cyan);   color: var(--bg); }
+    .badge-hot     { background: var(--orange);  color: var(--white); }
+    .badge-limited { background: var(--purple); color: var(--white); }
+
+    /* Photo card visual */
+    .product-card-visual { height: 260px; position: relative; overflow: hidden; }
+    .product-card-visual img {
+      width: 100%; height: 100%; object-fit: cover; object-position: center;
+      transition: transform .5s cubic-bezier(.25,.46,.45,.94), filter .5s;
+      display: block;
+    }
+    .product-card:hover .product-card-visual img { transform: scale(1.08); filter: brightness(1.05) saturate(1.1); }
+
+    /* color overlay fade to dark at bottom */
+    .photo-overlay {
+      position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(to top, rgba(14,14,18,.92) 0%, rgba(14,14,18,.3) 45%, transparent 100%);
+    }
+    /* per-card color tint */
+    .card-cyan   .photo-overlay { background: linear-gradient(to top, rgba(0,14,20,.95) 0%, rgba(0,229,255,.04) 60%, transparent 100%); }
+    .card-orange .photo-overlay { background: linear-gradient(to top, rgba(20,8,0,.95) 0%, rgba(255,107,0,.04) 60%, transparent 100%); }
+    .card-purple .photo-overlay { background: linear-gradient(to top, rgba(10,6,20,.95) 0%, rgba(155,77,255,.04) 60%, transparent 100%); }
+    .card-green  .photo-overlay { background: linear-gradient(to top, rgba(4,12,4,.95) 0%, rgba(74,160,60,.04) 60%, transparent 100%); }
+    .card-pink   .photo-overlay { background: linear-gradient(to top, rgba(20,0,10,.95) 0%, rgba(255,45,138,.04) 60%, transparent 100%); }
+
+    /* colored bottom glow strip */
+    .card-cyan   .product-card-visual::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg,transparent,var(--cyan),transparent); }
+    .card-orange .product-card-visual::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg,transparent,var(--orange),transparent); }
+    .card-purple .product-card-visual::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg,transparent,var(--purple),transparent); }
+    .card-green  .product-card-visual::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg,transparent,#4aa03c,transparent); }
+    .card-pink   .product-card-visual::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg,transparent,var(--pink),transparent); }
+
+    .product-card-body { padding: 20px; }
+    .product-brand { font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 4px; }
+    .card-cyan   .product-brand { color: var(--cyan); }
+    .card-orange .product-brand { color: var(--orange); }
+    .card-purple .product-brand { color: var(--purple); }
+    .card-green  .product-brand { color: #4ac040; }
+    .card-pink   .product-brand { color: var(--pink); }
+    .product-name { font-family: var(--font-head); font-size: 20px; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
+    .product-desc { font-size: 12px; color: var(--gray); margin-bottom: 16px; line-height: 1.5; }
+    .product-footer { display: flex; align-items: center; justify-content: space-between; }
+    .product-price { font-family: var(--font-head); font-size: 22px; font-weight: 900; }
+    .product-price .old { font-size: 14px; color: var(--gray2); text-decoration: line-through; margin-left: 8px; }
+    .product-colors { display: flex; gap: 6px; }
+    .color-dot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid transparent; cursor: pointer; transition: border-color .2s; }
+    .color-dot:hover, .color-dot.active { border-color: var(--white); }
+    .product-add-btn { margin-top: 14px; width: 100%; padding: 12px; background: transparent; border: 1px solid var(--border); color: var(--white); font-family: var(--font-head); font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background .2s, border-color .2s, color .2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .card-cyan   .product-add-btn:hover { background: var(--cyan);   border-color: var(--cyan);   color: var(--bg); }
+    .card-orange .product-add-btn:hover { background: var(--orange);  border-color: var(--orange);  color: var(--white); }
+    .card-purple .product-add-btn:hover { background: var(--purple); border-color: var(--purple); color: var(--white); }
+    .card-green  .product-add-btn:hover { background: #4aa03c; border-color: #4aa03c; color: var(--white); }
+    .card-pink   .product-add-btn:hover { background: var(--pink);  border-color: var(--pink);  color: var(--white); }
+
+    /* ── PROMO ── */
+    .promo-banner {
+      margin: 0 80px;
+      background: radial-gradient(ellipse 60% 100% at 80% 50%, rgba(255,107,0,.1) 0%, transparent 70%), radial-gradient(ellipse 40% 80% at 10% 50%, rgba(155,77,255,.08) 0%, transparent 70%), #0a0608;
+      border: 1px solid rgba(255,107,0,.2);
+      padding: 64px 80px; display: flex; align-items: center; justify-content: space-between;
+      position: relative; overflow: hidden;
+      clip-path: polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));
+    }
+    .promo-label { font-family: var(--font-head); font-size: 11px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
+    .promo-title { font-family: var(--font-head); font-size: clamp(40px,5vw,72px); font-weight: 900; text-transform: uppercase; line-height: .95; margin-bottom: 16px; }
+    .promo-subtitle { font-size: 15px; color: var(--gray); max-width: 380px; }
+    .countdown { display: flex; gap: 12px; }
+    .countdown-item { text-align: center; background: rgba(255,107,0,.08); border: 1px solid rgba(255,107,0,.2); padding: 16px 20px; min-width: 72px; }
+    .countdown-num { font-family: var(--font-head); font-size: 40px; font-weight: 900; color: var(--orange); line-height: 1; }
+    .countdown-unit { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray2); }
+
+    /* ── CATEGORIES ── */
+    .categories-section {
+      padding: 100px 80px;
+      background:
+        radial-gradient(ellipse 50% 60% at 20% 50%, rgba(0,229,255,.05) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 80% 50%, rgba(255,45,138,.05) 0%, transparent 70%),
+        linear-gradient(180deg, #070610 0%, #060608 100%);
+    }
+    .categories-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; grid-template-rows: 340px 280px; gap: 16px; }
+    .cat-card { position: relative; overflow: hidden; cursor: pointer; clip-path: polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px)); }
+    .cat-card-large { grid-row: span 2; }
+    .cat-bg { position: absolute; inset: 0; transition: transform .6s cubic-bezier(.25,.46,.45,.94); }
+    .cat-card:hover .cat-bg { transform: scale(1.06); }
+    .cat-content { position: absolute; bottom: 32px; left: 32px; z-index: 2; }
+    .cat-tag { font-family: var(--font-head); font-size: 10px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 6px; }
+    .cat-name { font-family: var(--font-head); font-size: 36px; font-weight: 900; text-transform: uppercase; line-height: 1; margin-bottom: 12px; }
+    .cat-cta { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-head); font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 10px 20px; background: rgba(0,0,0,.3); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.2); transition: background .2s; }
+    .cat-card:hover .cat-cta { background: rgba(255,255,255,.15); }
+
+    /* ── CATEGORY PHOTO CARDS ── */
+    .cat-photo-card { position: relative; overflow: hidden; cursor: pointer; clip-path: polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px)); }
+    .cat-photo-card .cat-bg img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.25,.46,.45,.94); }
+    .cat-photo-card:hover .cat-bg img { transform: scale(1.06); }
+
+    /* ── MANIFESTO ── */
+    .manifesto {
+      padding: 120px 80px; text-align: center; position: relative; overflow: hidden;
+      background:
+        radial-gradient(ellipse 70% 80% at 50% 50%, rgba(155,77,255,.06) 0%, rgba(0,229,255,.03) 50%, transparent 80%),
+        linear-gradient(180deg, #060608 0%, #090614 50%, #060608 100%);
+    }
+    .manifesto-quote { font-family: var(--font-head); font-size: clamp(36px,5vw,72px); font-weight: 900; text-transform: uppercase; line-height: 1.05; max-width: 900px; margin: 0 auto 40px; letter-spacing: -1px; }
+    .manifesto-quote em { font-style: italic; background: linear-gradient(90deg,var(--cyan),var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .manifesto-sub { font-size: 15px; color: var(--gray); max-width: 500px; margin: 0 auto; line-height: 1.7; }
+
+    /* ── NEWSLETTER ── */
+    .newsletter {
+      margin: 0 80px 100px;
+      background: radial-gradient(ellipse 60% 100% at 10% 50%, rgba(0,229,255,.06) 0%, transparent 60%), radial-gradient(ellipse 50% 100% at 90% 50%, rgba(155,77,255,.06) 0%, transparent 60%), #0c0816;
+      border: 1px solid rgba(0,229,255,.15);
+      padding: 64px; display: flex; align-items: center; justify-content: space-between; gap: 48px;
+      clip-path: polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));
+    }
+    .newsletter-copy h3 { font-family: var(--font-head); font-size: 40px; font-weight: 900; text-transform: uppercase; line-height: 1; margin-bottom: 8px; }
+    .newsletter-copy p { font-size: 14px; color: var(--gray); }
+    .newsletter-form { display: flex; flex: 1; max-width: 480px; }
+    .newsletter-input { flex: 1; padding: 16px 24px; background: rgba(255,255,255,.04); border: 1px solid var(--border); border-right: none; color: var(--white); font-size: 14px; outline: none; transition: border-color .2s; }
+    .newsletter-input:focus { border-color: var(--cyan); }
+    .newsletter-input::placeholder { color: var(--gray2); }
+    .newsletter-submit { padding: 16px 28px; background: linear-gradient(90deg,var(--cyan),var(--purple)); border: none; color: var(--white); font-family: var(--font-head); font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; white-space: nowrap; transition: filter .2s; }
+    .newsletter-submit:hover { filter: brightness(1.1); }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--border); padding: 64px 80px 40px; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 64px; margin-bottom: 64px; }
+    .footer-brand p { font-size: 13px; color: var(--gray); line-height: 1.7; max-width: 280px; margin: 16px 0 24px; }
+    .social-links { display: flex; gap: 12px; }
+    .social-link { width: 38px; height: 38px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--gray); transition: border-color .2s, color .2s; clip-path: polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px)); }
+    .social-link:hover { border-color: var(--cyan); color: var(--cyan); }
+    .footer-col h4 { font-family: var(--font-head); font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 10px; font-size: 13px; color: var(--gray); cursor: pointer; transition: color .2s; }
+    .footer-col li:hover { color: var(--white); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 32px; border-top: 1px solid var(--border); font-size: 12px; color: var(--gray2); }
+    .footer-bottom-links { display: flex; gap: 24px; }
+
+    /* ── FADE IN ── */
+    .fade-in { opacity: 0; transform: translateY(28px); transition: opacity .7s, transform .7s; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .fd1 { transition-delay: .1s; } .fd2 { transition-delay: .2s; } .fd3 { transition-delay: .3s; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="mainNav">
+  <a href="#" class="nav-logo">
+    <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#00E5FF"/><stop offset="100%" stop-color="#9B4DFF"/></linearGradient></defs>
+      <polygon points="18,3 34,33 2,33" fill="none" stroke="url(#lg)" stroke-width="2.5"/>
+      <polygon points="18,9 28,33 8,33" fill="rgba(155,77,255,.12)"/>
+      <circle cx="18" cy="3" r="2.5" fill="#00E5FF"/>
+    </svg>
+    PEAKLINE
+  </a>
+  <ul class="nav-links">
+    <li><a href="#">Running</a></li><li><a href="#">Training</a></li><li><a href="#">Outdoor</a></li><li><a href="#">Collezioni</a></li>
+    <li><a href="#" style="color:var(--orange)">Sale</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
+    <button><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+    <button><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+    <button class="cart-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span class="cart-badge">3</span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Nuova Collezione 2026</div>
+    <h1 class="hero-title">Supera<br><em>Ogni</em>Limite</h1>
+    <p class="hero-subtitle">Tecnologia di nuova generazione fusa con design di precisione. Costruite per atleti che non accettano compromessi.</p>
+    <div class="hero-ctas">
+      <a href="#products" class="btn-primary">Scopri la Collezione <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <a href="#" class="btn-secondary">Guarda il Film</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-glow-ring"></div>
+
+    <!-- Abstract hero visual: cerchi concentricI + cromatura tech -->
+    <div style="position:relative;width:520px;height:520px;flex-shrink:0;animation:float 4.5s ease-in-out infinite">
+
+      <!-- anello esterno pulse -->
+      <div style="position:absolute;inset:0;border-radius:50%;border:1px solid rgba(0,229,255,.12);animation:ring-pulse 4s ease-in-out infinite"></div>
+      <div style="position:absolute;inset:30px;border-radius:50%;border:1px solid rgba(155,77,255,.1);animation:ring-pulse 4s ease-in-out infinite .6s"></div>
+      <div style="position:absolute;inset:70px;border-radius:50%;border:1px solid rgba(0,229,255,.08);animation:ring-pulse 4s ease-in-out infinite 1.2s"></div>
+
+      <!-- disco centrale luminoso -->
+      <div style="position:absolute;inset:120px;border-radius:50%;background:radial-gradient(ellipse at 40% 35%,rgba(0,229,255,.18) 0%,rgba(155,77,255,.12) 50%,rgba(0,0,0,0) 100%)"></div>
+
+      <!-- testo gigante di sfondo — elemento decorativo -->
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:50%">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:148px;line-height:1;letter-spacing:-6px;color:transparent;-webkit-text-stroke:1px rgba(0,229,255,.12);user-select:none;white-space:nowrap">PL</span>
+      </div>
+
+      <!-- croce/mirino tech al centro -->
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:80px">
+        <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,229,255,.6),transparent)"></div>
+        <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,rgba(0,229,255,.6),transparent)"></div>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:10px;height:10px;border-radius:50%;background:var(--cyan);box-shadow:0 0 20px rgba(0,229,255,.8),0 0 40px rgba(0,229,255,.4)"></div>
+      </div>
+
+      <!-- dots decorativi sui vertici -->
+      <div style="position:absolute;top:80px;left:80px;width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px rgba(0,229,255,.8)"></div>
+      <div style="position:absolute;top:80px;right:80px;width:4px;height:4px;border-radius:50%;background:var(--purple);box-shadow:0 0 10px rgba(155,77,255,.8)"></div>
+      <div style="position:absolute;bottom:80px;right:80px;width:6px;height:6px;border-radius:50%;background:var(--orange);box-shadow:0 0 12px rgba(255,107,0,.8)"></div>
+      <div style="position:absolute;bottom:80px;left:80px;width:4px;height:4px;border-radius:50%;background:var(--pink);box-shadow:0 0 10px rgba(255,45,138,.8)"></div>
+
+      <!-- label modello -->
+      <div style="position:absolute;bottom:140px;left:50%;transform:translateX(-50%);text-align:center;z-index:2">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:rgba(0,229,255,.6);margin-bottom:4px">2026 COLLECTION</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">APEX PRO</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:rgba(255,255,255,.35);letter-spacing:2px">€ 189</div>
+      </div>
+    </div>
+
+    <style>
+      @keyframes ring-pulse { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.04);opacity:1} }
+    </style>
+  </div>
+  <div class="hero-stats">
+    <div><div class="stat-number">48+</div><div class="stat-label">Modelli Esclusivi</div></div>
+    <div><div class="stat-number">12K</div><div class="stat-label">Atleti Globali</div></div>
+    <div><div class="stat-number">4.9★</div><div class="stat-label">Recensioni</div></div>
+  </div>
+  <div class="scroll-indicator"><div class="scroll-line"></div>Scroll</div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item">APEX PRO 2026</span><span class="ticker-dot">◆</span><span class="ticker-item">Spedizione Gratuita Sopra 80€</span><span class="ticker-dot">◆</span><span class="ticker-item">Nuova Collezione Summer</span><span class="ticker-dot">◆</span><span class="ticker-item">RIDGE X TRAIL EDITION</span><span class="ticker-dot">◆</span><span class="ticker-item">Reso Gratuito 30 Giorni</span><span class="ticker-dot">◆</span><span class="ticker-item">VELOCITY V3 Carbon</span><span class="ticker-dot">◆</span>
+    <span class="ticker-item">APEX PRO 2026</span><span class="ticker-dot">◆</span><span class="ticker-item">Spedizione Gratuita Sopra 80€</span><span class="ticker-dot">◆</span><span class="ticker-item">Nuova Collezione Summer</span><span class="ticker-dot">◆</span><span class="ticker-item">RIDGE X TRAIL EDITION</span><span class="ticker-dot">◆</span><span class="ticker-item">Reso Gratuito 30 Giorni</span><span class="ticker-dot">◆</span><span class="ticker-item">VELOCITY V3 Carbon</span><span class="ticker-dot">◆</span>
+  </div>
+</div>
+
+
+<!-- CATEGORIES -->
+<section class="categories-section">
+  <div class="section-header fade-in">
+    <div><div class="section-tag">Esplora</div><h2 class="section-title">Le Categorie</h2></div>
+  </div>
+  <div class="categories-grid">
+
+    <!-- Running — large, photo + cyan overlay -->
+    <div class="cat-card cat-card-large fade-in" style="position:relative;overflow:hidden;grid-row:span 2;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))">
+      <div style="position:absolute;inset:0;transition:transform .6s cubic-bezier(.25,.46,.45,.94)" class="cat-bg">
+        <img src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=800&q=80" alt="Running" style="width:100%;height:100%;object-fit:cover"/>
+      </div>
+      <div style="position:absolute;inset:0;background:linear-gradient(160deg,rgba(0,229,255,.25) 0%,transparent 40%,rgba(0,10,20,.85) 100%)"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,20,35,.95) 0%,transparent 55%)"></div>
+      <div class="cat-content">
+        <div class="cat-tag" style="color:#00E5FF">Running</div>
+        <div class="cat-name">Corri<br>Più Forte</div>
+        <a href="#" class="cat-cta">Esplora <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </div>
+
+    <!-- Training — orange -->
+    <div class="cat-card fade-in fd1" style="position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))">
+      <div style="position:absolute;inset:0;transition:transform .6s cubic-bezier(.25,.46,.45,.94)" class="cat-bg">
+        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=600&q=80" alt="Training" style="width:100%;height:100%;object-fit:cover"/>
+      </div>
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,107,0,.3) 0%,transparent 50%,rgba(20,8,0,.9) 100%)"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(30,10,0,.95) 0%,transparent 55%)"></div>
+      <div class="cat-content">
+        <div class="cat-tag" style="color:#FF6B00">Training</div>
+        <div class="cat-name">Power<br>Up</div>
+        <a href="#" class="cat-cta">Esplora <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </div>
+
+    <!-- Outdoor — green -->
+    <div class="cat-card fade-in fd2" style="position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))">
+      <div style="position:absolute;inset:0;transition:transform .6s cubic-bezier(.25,.46,.45,.94)" class="cat-bg">
+        <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=600&q=80" alt="Outdoor" style="width:100%;height:100%;object-fit:cover"/>
+      </div>
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,255,136,.2) 0%,transparent 50%,rgba(4,14,6,.9) 100%)"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(4,16,6,.95) 0%,transparent 55%)"></div>
+      <div class="cat-content">
+        <div class="cat-tag" style="color:#00FF88">Outdoor</div>
+        <div class="cat-name">Into<br>The Wild</div>
+        <a href="#" class="cat-cta">Esplora <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </div>
+
+    <!-- Women — pink/purple -->
+    <div class="cat-card fade-in fd3" style="position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))">
+      <div style="position:absolute;inset:0;transition:transform .6s cubic-bezier(.25,.46,.45,.94)" class="cat-bg">
+        <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=600&q=80" alt="Women" style="width:100%;height:100%;object-fit:cover"/>
+      </div>
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,45,138,.25) 0%,transparent 50%,rgba(16,6,24,.9) 100%)"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(18,6,26,.95) 0%,transparent 55%)"></div>
+      <div class="cat-content">
+        <div class="cat-tag" style="color:#FF2D8A">Donna</div>
+        <div class="cat-name">She<br>Runs</div>
+        <a href="#" class="cat-cta">Esplora <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products-section" id="products">
+  <div class="section-header fade-in">
+    <div><div class="section-tag">I Più Venduti</div><h2 class="section-title">Top Performance</h2></div>
+    <a href="#" class="section-link">Vedi Tutto <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+  <div class="products-grid">
+
+    <!-- 1: APEX PRO — Nike Air Max-style, cyan -->
+    <div class="product-card card-cyan fade-in">
+      <div class="product-card-badge badge-new">New</div>
+      <div class="product-card-visual">
+        <img
+          src="images/Apex Pro.jpeg"
+          alt="Apex Pro running shoe"
+          loading="lazy"
+        />
+        <div class="photo-overlay"></div>
+      </div>
+      <div class="product-card-body">
+        <div class="product-brand">Peakline Running</div>
+        <div class="product-name">Apex Pro</div>
+        <div class="product-desc">ZoomX foam con air unit al tallone e tomaia in Flyknit reattivo</div>
+        <div class="product-footer">
+          <div class="product-price">€189</div>
+          <div class="product-colors">
+            <div class="color-dot active" style="background:#00E5FF"></div>
+            <div class="color-dot" style="background:#FF6B00"></div>
+            <div class="color-dot" style="background:#fff;border-color:#333"></div>
+          </div>
+        </div>
+        <button class="product-add-btn">+ Aggiungi al Carrello</button>
+      </div>
+    </div>
+
+    <!-- 2: RIDGE X — Hoka trail, orange -->
+    <div class="product-card card-orange fade-in fd1">
+      <div class="product-card-badge badge-hot">Hot</div>
+      <div class="product-card-visual">
+        <img
+          src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=600&q=80"
+          alt="Ridge X trail shoe"
+          loading="lazy"
+        />
+        <div class="photo-overlay"></div>
+      </div>
+      <div class="product-card-body">
+        <div class="product-brand">Peakline Trail</div>
+        <div class="product-name">Ridge X</div>
+        <div class="product-desc">Meta-rocker maxI-cushion con grip aggressivo Vibram Megagrip</div>
+        <div class="product-footer">
+          <div class="product-price">€159 <span class="old">€199</span></div>
+          <div class="product-colors">
+            <div class="color-dot active" style="background:#FF6B00"></div>
+            <div class="color-dot" style="background:#222"></div>
+            <div class="color-dot" style="background:#3D5A3E"></div>
+          </div>
+        </div>
+        <button class="product-add-btn">+ Aggiungi al Carrello</button>
+      </div>
+    </div>
+
+    <!-- 3: VELOCITY V3 — racing flat, purple/tech -->
+    <div class="product-card card-purple fade-in fd2">
+      <div class="product-card-badge badge-new">New</div>
+      <div class="product-card-visual">
+        <img
+          src="images/Velocity V3.jpeg"
+          alt="Velocity V3 racing shoe"
+          loading="lazy"
+        />
+        <div class="photo-overlay"></div>
+      </div>
+      <div class="product-card-body">
+        <div class="product-brand">Peakline Speed</div>
+        <div class="product-name">Velocity V3</div>
+        <div class="product-desc">Piastra carbonio full-length, tomaia AtomKnit ultra-light da 78g</div>
+        <div class="product-footer">
+          <div class="product-price">€229</div>
+          <div class="product-colors">
+            <div class="color-dot active" style="background:#dde;border-color:#555"></div>
+            <div class="color-dot" style="background:#00E5FF"></div>
+            <div class="color-dot" style="background:#cc2244"></div>
+          </div>
+        </div>
+        <button class="product-add-btn">+ Aggiungi al Carrello</button>
+      </div>
+    </div>
+
+    <!-- 4: SUMMIT LITE — outdoor boot, green -->
+    <div class="product-card card-green fade-in fd3">
+      <div class="product-card-badge badge-limited">Limited</div>
+      <div class="product-card-visual">
+        <img
+          src="images/summit_lite.jpeg"
+          alt="Summit Lite outdoor boot"
+          loading="lazy"
+        />
+        <div class="photo-overlay"></div>
+      </div>
+      <div class="product-card-body">
+        <div class="product-brand">Peakline Alpine</div>
+        <div class="product-name">Summit Lite</div>
+        <div class="product-desc">Membrana OrthoShield impermeabile, suola Vibram Megagrip mid-cut</div>
+        <div class="product-footer">
+          <div class="product-price">€249</div>
+          <div class="product-colors">
+            <div class="color-dot active" style="background:#4a6040"></div>
+            <div class="color-dot" style="background:#6e5c42"></div>
+            <div class="color-dot" style="background:#1a1a2e"></div>
+          </div>
+        </div>
+        <button class="product-add-btn">+ Aggiungi al Carrello</button>
+      </div>
+    </div>
+
+    <!-- 5: STRIDE S1 — entry running, cyan -->
+    <div class="product-card card-cyan fade-in fd1">
+      <div class="product-card-badge badge-new">New</div>
+      <div class="product-card-visual">
+        <img
+          src="images/stride_s1.jpeg"
+          alt="Stride S1 running shoe"
+          loading="lazy"
+        />
+        <div class="photo-overlay"></div>
+      </div>
+      <div class="product-card-body">
+        <div class="product-brand">Peakline Running</div>
+        <div class="product-name">Stride S1</div>
+        <div class="product-desc">EVA reattivo, tomaia mesh traspirante, drop 8mm, wide toe box</div>
+        <div class="product-footer">
+          <div class="product-price">€129</div>
+          <div class="product-colors">
+            <div class="color-dot active" style="background:#00E5FF"></div>
+            <div class="color-dot" style="background:#fff;border-color:#333"></div>
+            <div class="color-dot" style="background:#1a1a2e"></div>
+          </div>
+        </div>
+        <button class="product-add-btn">+ Aggiungi al Carrello</button>
+      </div>
+    </div>
+
+    <!-- 6: FLASH 2.0 — road racer, pink -->
+    <div class="product-card card-pink fade-in fd2">
+      <div class="product-card-badge badge-hot">Hot</div>
+      <div class="product-card-visual">
+        <img
+          src="images/flash_2.0.jpeg"
+          alt="Flash 2.0 racing shoe"
+          loading="lazy"
+        />
+        <div class="photo-overlay"></div>
+      </div>
+      <div class="product-card-body">
+        <div class="product-brand">Peakline Speed</div>
+        <div class="product-name">Flash 2.0</div>
+        <div class="product-desc">Road racer ultraleggera, drop 4mm, stack minimalista, grip responsive</div>
+        <div class="product-footer">
+          <div class="product-price">€175</div>
+          <div class="product-colors">
+            <div class="color-dot active" style="background:#FF2D8A"></div>
+            <div class="color-dot" style="background:#00E5FF"></div>
+            <div class="color-dot" style="background:#1a1a2e"></div>
+          </div>
+        </div>
+        <button class="product-add-btn">+ Aggiungi al Carrello</button>
+      </div>
+    </div>
+
+    <!-- 7: CANYON XT — waterproof trail, orange -->
+    <div class="product-card card-orange fade-in fd3">
+      <div class="product-card-badge badge-new">New</div>
+      <div class="product-card-visual">
+        <img
+          src="images/kanyion_xt.jpeg"
+          alt="Canyon XT trail shoe"
+          loading="lazy"
+        />
+        <div class="photo-overlay"></div>
+      </div>
+      <div class="product-card-body">
+        <div class="product-brand">Peakline Trail</div>
+        <div class="product-name">Canyon XT</div>
+        <div class="product-desc">Gore-Tex impermeabile, lug 5mm, protezione roccia TPU, supporto dinamico</div>
+        <div class="product-footer">
+          <div class="product-price">€199</div>
+          <div class="product-colors">
+            <div class="color-dot active" style="background:#FF6B00"></div>
+            <div class="color-dot" style="background:#3D5A3E"></div>
+            <div class="color-dot" style="background:#222"></div>
+          </div>
+        </div>
+        <button class="product-add-btn">+ Aggiungi al Carrello</button>
+      </div>
+    </div>
+
+    <!-- 8: POWER CROSS — gym/training, purple -->
+    <div class="product-card card-purple fade-in">
+      <div class="product-card-badge badge-limited">Sale</div>
+      <div class="product-card-visual">
+        <img
+          src="https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=600&q=80"
+          alt="Power Cross training shoe"
+          loading="lazy"
+        />
+        <div class="photo-overlay"></div>
+      </div>
+      <div class="product-card-body">
+        <div class="product-brand">Peakline Training</div>
+        <div class="product-name">Power Cross</div>
+        <div class="product-desc">Stabilità laterale rinforzata, suola flat training, tomaia durabile</div>
+        <div class="product-footer">
+          <div class="product-price">€99 <span class="old">€129</span></div>
+          <div class="product-colors">
+            <div class="color-dot active" style="background:#9B4DFF"></div>
+            <div class="color-dot" style="background:#222"></div>
+            <div class="color-dot" style="background:#fff;border-color:#333"></div>
+          </div>
+        </div>
+        <button class="product-add-btn">+ Aggiungi al Carrello</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROMO -->
+<div class="promo-banner fade-in">
+  <div>
+    <div class="promo-label">Offerta Lampo · Solo Oggi</div>
+    <div class="promo-title">Fino al<br><span style="color:var(--orange)">40%</span><br>di Sconto</div>
+    <p class="promo-subtitle">Su tutta la collezione SS2025. Affrettati, le quantità sono limitate.</p>
+    <a href="#" class="btn-primary" style="margin-top:28px;display:inline-flex">Vai alla Sale <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+  <div class="countdown">
+    <div class="countdown-item"><div class="countdown-num" id="cd-h">08</div><div class="countdown-unit">Ore</div></div>
+    <div class="countdown-item"><div class="countdown-num" id="cd-m">42</div><div class="countdown-unit">Min</div></div>
+    <div class="countdown-item"><div class="countdown-num" id="cd-s">17</div><div class="countdown-unit">Sec</div></div>
+  </div>
+</div>
+
+
+
+<!-- MANIFESTO -->
+<section class="manifesto fade-in">
+  <div class="manifesto-quote">Non costruiamo scarpe.<br>Costruiamo <em>estensioni</em><br>del tuo potenziale.</div>
+  <p class="manifesto-sub">Ogni curva, ogni grammo, ogni materiale è una scelta deliberata. Progettiamo per chi si rifiuta di fermarsi.</p>
+</section>
+
+<!-- NEWSLETTER -->
+<div class="newsletter fade-in">
+  <div class="newsletter-copy"><h3>Stay<br>Ahead</h3><p>Lanci esclusivi, drop limitati e performance tips.</p></div>
+  <form class="newsletter-form" onsubmit="return false">
+    <input type="email" class="newsletter-input" placeholder="La tua email"/>
+    <button type="submit" class="newsletter-submit">Iscriviti</button>
+  </form>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="nav-logo" style="font-size:18px;letter-spacing:3px">
+        <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><defs><linearGradient id="flg" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#00E5FF"/><stop offset="100%" stop-color="#9B4DFF"/></linearGradient></defs><polygon points="18,3 34,33 2,33" fill="none" stroke="url(#flg)" stroke-width="2.5"/><polygon points="18,9 28,33 8,33" fill="rgba(155,77,255,.12)"/><circle cx="18" cy="3" r="2.5" fill="#00E5FF"/></svg>
+        PEAKLINE
+      </div>
+      <p>Performance reimaginata. Costruita per atleti che vivono al limite — in montagna, in pista, in palestra.</p>
+      <div class="social-links">
+        <a href="#" class="social-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+        <a href="#" class="social-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg></a>
+        <a href="#" class="social-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg></a>
+      </div>
+    </div>
+    <div class="footer-col"><h4>Prodotti</h4><ul><li>Running</li><li>Trail</li><li>Training</li><li>Outdoor</li><li>Donna</li><li>Accessori</li></ul></div>
+    <div class="footer-col"><h4>Supporto</h4><ul><li>Guida alle Taglie</li><li>Spedizioni</li><li>Resi &amp; Cambi</li><li>FAQ</li><li>Contattaci</li></ul></div>
+    <div class="footer-col"><h4>Company</h4><ul><li>Chi Siamo</li><li>Sostenibilità</li><li>Atleti Peakline</li><li>Press</li><li>Lavora con Noi</li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 PEAKLINE S.r.l. — Tutti i diritti riservati.</div>
+    <div class="footer-bottom-links"><a href="#">Privacy</a><a href="#">Cookie</a><a href="#">Termini</a></div>
+  </div>
+</footer>
+
+<script>
+  // Fade in
+  const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting){x.target.classList.add('visible');obs.unobserve(x.target);}}),{threshold:.1});
+  document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+
+  // Nav
+  const nav=document.getElementById('mainNav');
+  window.addEventListener('scroll',()=>{nav.style.background=window.scrollY>60?'rgba(6,6,8,.98)':'rgba(6,6,8,.9)';});
+
+  // Countdown
+  function cd(){
+    const now=new Date(),end=new Date(now);end.setHours(23,59,59,0);
+    const d=Math.max(0,end-now),p=n=>String(n).padStart(2,'0');
+    document.getElementById('cd-h').textContent=p(Math.floor(d/3600000));
+    document.getElementById('cd-m').textContent=p(Math.floor(d%3600000/60000));
+    document.getElementById('cd-s').textContent=p(Math.floor(d%60000/1000));
+  } cd(); setInterval(cd,1000);
+
+  // Color dot
+  document.querySelectorAll('.color-dot').forEach(dot=>dot.addEventListener('click',function(){
+    this.closest('.product-colors').querySelectorAll('.color-dot').forEach(d=>d.classList.remove('active'));
+    this.classList.add('active');
+  }));
+
+  // Add to cart
+  document.querySelectorAll('.product-add-btn').forEach(btn=>btn.addEventListener('click',function(){
+    const orig=this.innerHTML;
+    this.innerHTML='✓ Aggiunto!';this.style.cssText='background:var(--cyan);border-color:var(--cyan);color:var(--bg)';
+    setTimeout(()=>{this.innerHTML=orig;this.style.cssText='';},1800);
+  }));
+
+  // Category card hover scale (img inside)
+  document.querySelectorAll('.cat-card').forEach(card=>{
+    const bg=card.querySelector('.cat-bg');
+    if(!bg)return;
+    card.addEventListener('mouseenter',()=>{bg.style.transform='scale(1.06)';bg.style.transition='transform .6s cubic-bezier(.25,.46,.45,.94)';});
+    card.addEventListener('mouseleave',()=>{bg.style.transform='scale(1)';});
+  });
+</script>
+<!-- ══════════════════════════════════════════════════════
+     PEAK AI — SHOPPING ASSISTANT (Enhanced)
+══════════════════════════════════════════════════════ -->
+<style>
+/* ── FAB ── */
+#pl-fab{
+  position:fixed;bottom:28px;right:28px;z-index:9999;
+  width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 28px rgba(0,229,255,.4),0 2px 8px rgba(0,0,0,.5);
+  transition:transform .2s,box-shadow .2s;
+}
+#pl-fab:hover{transform:scale(1.08);box-shadow:0 8px 36px rgba(0,229,255,.6);}
+
+/* ── Panel ── */
+#pl-panel{
+  position:fixed;bottom:96px;right:28px;z-index:9998;
+  width:390px;height:640px;max-height:calc(100vh - 110px);
+  background:#0f0f1a;border-radius:18px;
+  border:1px solid rgba(0,229,255,.12);
+  box-shadow:0 24px 64px rgba(0,0,0,.7),0 0 0 1px rgba(0,229,255,.04);
+  display:none;flex-direction:column;overflow:hidden;
+  transition:width .3s,height .3s,border-radius .3s;
+  font-family:var(--font-body);
+}
+#pl-panel.open{display:flex;}
+#pl-panel.expanded{width:min(680px,calc(100vw - 2rem));height:85vh;}
+#pl-panel.minimized{height:56px;border-radius:14px;overflow:hidden;}
+#pl-panel.minimized #pl-body,#pl-panel.minimized #pl-input-area,#pl-panel.minimized .pl-footer{display:none!important;}
+@keyframes plSlideUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+#pl-panel.open{animation:plSlideUp .25s ease-out;}
+
+/* ── Header ── */
+.pl-hdr{
+  display:flex;align-items:center;gap:6px;
+  padding:10px 12px;background:#0a0a14;
+  border-bottom:1px solid rgba(0,229,255,.08);flex-shrink:0;
+}
+.pl-hdr-av{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+.pl-hdr-av svg{width:18px;height:18px;}
+.pl-hdr-title{flex:1;font-size:12px;font-weight:700;color:#dde;letter-spacing:.06em;line-height:1.2;}
+.pl-hdr-sub{font-size:10px;font-weight:400;color:#778;letter-spacing:.04em;}
+.pl-online{display:inline-block;width:6px;height:6px;border-radius:50%;background:#4af;margin-left:4px;vertical-align:middle;}
+#pl-call-info{display:none;font-size:10px;color:var(--cyan);gap:3px;align-items:center;}
+#pl-call-info.on{display:inline-flex;}
+.pl-hdr-btn{
+  width:28px;height:28px;border-radius:6px;border:none;cursor:pointer;
+  background:transparent;color:#778;display:flex;align-items:center;justify-content:center;
+  transition:background .15s,color .15s;flex-shrink:0;
+}
+.pl-hdr-btn:hover{background:rgba(255,255,255,.08);color:#dde;}
+.pl-hdr-btn.active{color:var(--cyan);}
+.pl-hdr-btn.voice-on{color:#ff4444;background:rgba(255,68,68,.1);}
+
+/* ── Body ── */
+#pl-body{flex:1;display:flex;flex-direction:column;min-height:0;position:relative;}
+
+/* ── Welcome ── */
+#pl-welcome{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;
+  padding:24px 20px 16px;overflow-y:auto;
+}
+.pl-w-avatar{
+  width:80px;height:80px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(145deg,rgba(0,229,255,.18),rgba(155,77,255,.22));
+  border:2px solid rgba(0,229,255,.18);
+  display:flex;align-items:center;justify-content:center;margin-bottom:14px;
+}
+.pl-w-name{font-size:17px;font-weight:700;color:#eef;margin-bottom:6px;letter-spacing:.04em;}
+.pl-w-sub{font-size:12.5px;color:#778;line-height:1.6;max-width:280px;text-align:center;margin-bottom:20px;}
+.pl-suggestions{width:100%;display:flex;flex-direction:column;gap:6px;}
+.pl-sug-btn{
+  width:100%;text-align:left;padding:9px 14px;border-radius:8px;cursor:pointer;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  color:#bbc;font-size:12.5px;font-family:var(--font-body);
+  transition:background .15s,border-color .15s,color .15s;
+}
+.pl-sug-btn:hover{background:rgba(0,229,255,.07);border-color:rgba(0,229,255,.2);color:#dde;}
+
+/* ── Messages ── */
+#pl-msgs{
+  flex:1;overflow-y:auto;padding:14px 12px 8px;
+  display:none;flex-direction:column;gap:10px;scroll-behavior:smooth;
+}
+#pl-msgs.on{display:flex;}
+#pl-msgs::-webkit-scrollbar{width:2px;}
+#pl-msgs::-webkit-scrollbar-thumb{background:rgba(0,229,255,.15);}
+
+.pl-msg{display:flex;gap:8px;max-width:94%;}
+.pl-msg.user{align-self:flex-end;flex-direction:row-reverse;}
+.pl-bubble{padding:9px 13px;font-size:12.5px;line-height:1.55;border-radius:11px;}
+.pl-msg.bot .pl-bubble{background:#1c1c2e;color:#dde;border-bottom-left-radius:3px;}
+.pl-msg.user .pl-bubble{
+  background:linear-gradient(135deg,rgba(0,229,255,.22),rgba(155,77,255,.16));
+  border:1px solid rgba(0,229,255,.2);color:#fff;border-bottom-right-radius:3px;
+}
+.pl-bot-ico{
+  width:26px;height:26px;border-radius:50%;flex-shrink:0;margin-top:2px;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  display:flex;align-items:center;justify-content:center;
+}
+@keyframes plFadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.pl-msg{animation:plFadeIn .2s ease-out;}
+
+/* Typing dots */
+.pl-typing{display:flex;gap:4px;align-items:center;padding:3px 2px;}
+.pl-typing i{display:block;width:5px;height:5px;border-radius:50%;background:rgba(0,229,255,.5);animation:ptyp .9s ease-in-out infinite;}
+.pl-typing i:nth-child(2){animation-delay:.16s;}
+.pl-typing i:nth-child(3){animation-delay:.32s;}
+@keyframes ptyp{0%,60%,100%{transform:translateY(0);opacity:.25}30%{transform:translateY(-5px);opacity:1}}
+
+/* ── Rich components wrapper ── */
+.pl-comp{padding:4px 0 2px;width:100%;}
+
+/* Carousel */
+.pl-carousel{display:flex;overflow-x:auto;gap:8px;padding-bottom:4px;scrollbar-width:none;}
+.pl-carousel::-webkit-scrollbar{display:none;}
+.pl-c-card{
+  flex-shrink:0;width:130px;background:#1a1a2c;
+  border:1px solid rgba(255,255,255,.08);border-radius:9px;overflow:hidden;cursor:pointer;
+  transition:border-color .2s,transform .2s;
+}
+.pl-c-card:hover{border-color:rgba(0,229,255,.35);transform:translateY(-2px);}
+.pl-c-card img{width:100%;height:110px;object-fit:cover;display:block;}
+.pl-c-info{padding:7px 9px 9px;}
+.pl-c-name{font-weight:700;font-size:12px;color:#eef;margin-bottom:2px;}
+.pl-c-price{font-size:11.5px;color:#778;margin-bottom:5px;}
+.pl-c-dots{display:flex;gap:4px;margin-bottom:6px;}
+.pl-cdot{width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);}
+.pl-c-btn{
+  width:100%;padding:5px 0;border-radius:5px;border:1px solid rgba(0,229,255,.25);
+  background:rgba(0,229,255,.06);color:var(--cyan);font-size:10px;font-weight:600;
+  cursor:pointer;font-family:var(--font-body);letter-spacing:.04em;
+  transition:background .15s;
+}
+.pl-c-btn:hover{background:rgba(0,229,255,.18);}
+.pl-comp-label{font-size:10px;color:#667;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;}
+
+/* Product detail */
+.pl-det-card{
+  background:#1a1a2c;border:1px solid rgba(255,255,255,.08);
+  border-radius:11px;overflow:hidden;
+}
+.pl-det-top{display:flex;gap:0;}
+.pl-det-img{width:100px;height:130px;object-fit:cover;flex-shrink:0;}
+.pl-det-body{padding:10px 12px;flex:1;min-width:0;}
+.pl-det-name{font-size:14px;font-weight:700;color:#eef;margin-bottom:3px;}
+.pl-det-price{font-size:13px;color:var(--cyan);font-weight:700;margin-bottom:6px;}
+.pl-det-desc{font-size:11.5px;color:#99a;line-height:1.5;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.pl-det-meta{font-size:10.5px;color:#667;margin-bottom:2px;}
+.pl-det-meta strong{color:#99a;}
+.pl-det-dots{display:flex;gap:4px;margin:5px 0;}
+.pl-det-sizes{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 0;}
+.pl-size-chip{padding:2px 7px;border-radius:4px;border:1px solid rgba(255,255,255,.12);font-size:10px;color:#99a;}
+.pl-det-footer{
+  display:grid;grid-template-columns:1fr 1fr;border-top:1px solid rgba(255,255,255,.06);
+}
+.pl-det-footer button{
+  padding:10px;border:none;background:transparent;cursor:pointer;font-size:11px;
+  font-family:var(--font-body);font-weight:600;letter-spacing:.04em;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  transition:background .15s;color:#99a;
+}
+.pl-det-footer button:first-child{border-right:1px solid rgba(255,255,255,.06);}
+.pl-det-footer button:last-child{color:var(--cyan);}
+.pl-det-footer button:hover{background:rgba(255,255,255,.04);}
+
+/* Comparison table */
+.pl-cmp-table{background:#1a1a2c;border:1px solid rgba(255,255,255,.08);border-radius:11px;overflow:hidden;width:100%;}
+.pl-cmp-head{display:grid;border-bottom:1px solid rgba(255,255,255,.06);}
+.pl-cmp-head-cell{padding:8px 6px;text-align:center;border-right:1px solid rgba(255,255,255,.06);}
+.pl-cmp-head-cell:last-child{border-right:none;}
+.pl-cmp-head-cell img{width:100%;height:60px;object-fit:cover;border-radius:5px;margin-bottom:4px;}
+.pl-cmp-head-cell div{font-size:10.5px;font-weight:700;color:#dde;}
+.pl-cmp-row{display:grid;border-bottom:1px solid rgba(255,255,255,.04);}
+.pl-cmp-row:last-child{border-bottom:none;}
+.pl-cmp-label{padding:7px 8px;font-size:10px;color:#667;font-weight:600;letter-spacing:.04em;text-transform:uppercase;border-right:1px solid rgba(255,255,255,.06);}
+.pl-cmp-cell{padding:7px 6px;text-align:center;font-size:11px;color:#99a;border-right:1px solid rgba(255,255,255,.06);}
+.pl-cmp-cell:last-child{border-right:none;}
+.pl-cmp-cell.cyan{color:var(--cyan);font-weight:700;}
+.pl-cmp-foot{display:grid;border-top:1px solid rgba(255,255,255,.06);}
+.pl-cmp-foot button{
+  padding:8px 4px;border:none;background:rgba(0,229,255,.07);cursor:pointer;
+  font-size:10.5px;color:var(--cyan);font-weight:600;font-family:var(--font-body);
+  border-right:1px solid rgba(255,255,255,.06);transition:background .15s;
+}
+.pl-cmp-foot button:last-child{border-right:none;}
+.pl-cmp-foot button:hover{background:rgba(0,229,255,.16);}
+
+/* Cart summary */
+.pl-cart-card{background:#1a1a2c;border:1px solid rgba(255,255,255,.08);border-radius:11px;overflow:hidden;}
+.pl-cart-head{
+  display:flex;align-items:center;gap:7px;padding:10px 12px;
+  background:rgba(0,229,255,.05);border-bottom:1px solid rgba(0,229,255,.1);
+  font-size:12px;font-weight:700;color:var(--cyan);
+}
+.pl-cart-items{max-height:160px;overflow-y:auto;padding:4px 0;}
+.pl-cart-item{
+  display:flex;align-items:center;gap:8px;padding:6px 12px;
+  transition:background .15s;
+}
+.pl-cart-item.new-item{background:rgba(0,229,255,.05);}
+.pl-cart-item img{width:36px;height:46px;object-fit:cover;border-radius:5px;flex-shrink:0;}
+.pl-cart-item-info{flex:1;min-width:0;}
+.pl-cart-item-name{font-size:11.5px;font-weight:700;color:#dde;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pl-cart-item-sub{font-size:10.5px;color:#778;}
+.pl-cart-item-price{font-size:12px;font-weight:700;color:#dde;flex-shrink:0;}
+.pl-cart-new-badge{font-size:9px;color:var(--cyan);font-weight:700;letter-spacing:.04em;text-transform:uppercase;}
+.pl-cart-foot{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 12px;border-top:1px solid rgba(255,255,255,.06);
+}
+.pl-cart-total{font-size:12px;color:#dde;}
+.pl-cart-total strong{color:var(--cyan);}
+.pl-cart-cta{
+  padding:7px 14px;border-radius:7px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  color:#060614;font-size:11px;font-weight:700;font-family:var(--font-body);
+  letter-spacing:.04em;transition:opacity .15s;
+}
+.pl-cart-cta:hover{opacity:.85;}
+
+/* Quick chips */
+.pl-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.pl-chip{
+  padding:5px 11px;border-radius:999px;
+  background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.2);
+  color:var(--cyan);font-size:11.5px;font-weight:600;
+  cursor:pointer;transition:background .15s;font-family:var(--font-body);
+}
+.pl-chip:hover{background:rgba(0,229,255,.16);}
+
+/* ── Attachment pending strip ── */
+#pl-att-strip{
+  display:none;padding:8px 12px 0;
+  flex-wrap:nowrap;overflow-x:auto;gap:6px;scrollbar-width:none;
+}
+#pl-att-strip.on{display:flex;}
+.pl-att-tile{
+  position:relative;flex-shrink:0;width:56px;height:56px;border-radius:7px;overflow:hidden;
+  border:1px solid rgba(0,229,255,.2);
+}
+.pl-att-tile img{width:100%;height:100%;object-fit:cover;}
+.pl-att-del{
+  position:absolute;top:-1px;right:-1px;width:17px;height:17px;border-radius:50%;
+  background:#0f0f1a;border:1px solid rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  font-size:9px;color:#99a;line-height:1;
+}
+
+/* ── Camera overlay ── */
+#pl-cam-overlay{
+  position:absolute;inset:0;z-index:10;background:#0a0a14;
+  display:none;flex-direction:column;
+}
+#pl-cam-overlay.on{display:flex;}
+#pl-cam-video{flex:1;object-fit:cover;}
+.pl-cam-bar{
+  display:flex;justify-content:center;gap:12px;padding:12px;
+  background:#0a0a14;border-top:1px solid rgba(255,255,255,.06);
+}
+.pl-cam-bar button{
+  padding:8px 20px;border-radius:8px;border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.06);color:#dde;font-family:var(--font-body);
+  font-size:12px;cursor:pointer;transition:background .15s;
+}
+.pl-cam-bar button.primary{background:var(--cyan);color:#060614;border-color:var(--cyan);font-weight:700;}
+
+/* ── Voice panel ── */
+#pl-voice-panel{
+  flex:1;display:none;flex-direction:column;align-items:center;
+  padding:16px 14px 12px;gap:14px;overflow-y:auto;
+}
+#pl-voice-panel.on{display:flex;}
+
+.pl-v-id{
+  display:flex;align-items:center;gap:8px;align-self:flex-start;width:100%;
+  padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06);
+}
+.pl-v-id-av{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.pl-v-id-name{font-size:13px;font-weight:700;color:#dde;}
+.pl-v-id-sub{font-size:10.5px;color:#778;}
+
+/* Waveform */
+.pl-waveform{display:flex;align-items:center;gap:4px;height:48px;}
+.pl-wbar{
+  width:5px;border-radius:3px;background:rgba(0,229,255,.18);
+  transform-origin:bottom;transition:background .3s;
+}
+.pl-wbar:nth-child(1){height:12px;}
+.pl-wbar:nth-child(2){height:18px;}
+.pl-wbar:nth-child(3){height:26px;}
+.pl-wbar:nth-child(4){height:34px;}
+.pl-wbar:nth-child(5){height:42px;}
+.pl-wbar:nth-child(6){height:34px;}
+.pl-wbar:nth-child(7){height:26px;}
+.pl-wbar:nth-child(8){height:18px;}
+.pl-wbar:nth-child(9){height:12px;}
+@keyframes plWave{0%,100%{transform:scaleY(.3);}50%{transform:scaleY(1);}}
+#pl-voice-panel.listening .pl-wbar{background:var(--cyan);animation:plWave .6s ease-in-out infinite;}
+#pl-voice-panel.listening .pl-wbar:nth-child(2){animation-delay:.1s;}
+#pl-voice-panel.listening .pl-wbar:nth-child(3){animation-delay:.2s;}
+#pl-voice-panel.listening .pl-wbar:nth-child(4){animation-delay:.1s;}
+#pl-voice-panel.listening .pl-wbar:nth-child(5){animation-delay:.0s;}
+#pl-voice-panel.listening .pl-wbar:nth-child(6){animation-delay:.1s;}
+#pl-voice-panel.listening .pl-wbar:nth-child(7){animation-delay:.2s;}
+#pl-voice-panel.listening .pl-wbar:nth-child(8){animation-delay:.1s;}
+#pl-voice-panel.listening .pl-wbar:nth-child(9){animation-delay:.0s;}
+#pl-voice-panel.speaking .pl-wbar{background:var(--purple);animation:plWave .5s ease-in-out infinite;}
+#pl-voice-panel.speaking .pl-wbar:nth-child(2){animation-delay:.08s;}
+#pl-voice-panel.speaking .pl-wbar:nth-child(3){animation-delay:.16s;}
+#pl-voice-panel.speaking .pl-wbar:nth-child(4){animation-delay:.08s;}
+#pl-voice-panel.speaking .pl-wbar:nth-child(5){animation-delay:.0s;}
+#pl-voice-panel.speaking .pl-wbar:nth-child(6){animation-delay:.08s;}
+#pl-voice-panel.speaking .pl-wbar:nth-child(7){animation-delay:.16s;}
+#pl-voice-panel.speaking .pl-wbar:nth-child(8){animation-delay:.08s;}
+#pl-voice-panel.speaking .pl-wbar:nth-child(9){animation-delay:.0s;}
+#pl-voice-panel.processing .pl-wbar{background:rgba(155,77,255,.5);animation:plWave 1s ease-in-out infinite;}
+
+.pl-v-status{font-size:11.5px;color:#778;letter-spacing:.04em;}
+#pl-voice-panel.listening .pl-v-status{color:var(--cyan);}
+#pl-voice-panel.speaking .pl-v-status{color:var(--purple);}
+.pl-v-interim{font-size:11.5px;color:#99a;font-style:italic;text-align:center;min-height:16px;}
+
+.pl-v-last{
+  width:100%;background:#1c1c2e;border:1px solid rgba(0,229,255,.1);
+  border-radius:10px;padding:10px 12px;font-size:12.5px;color:#dde;line-height:1.55;
+  flex:1;overflow-y:auto;
+}
+
+.pl-v-ctrl{width:100%;display:flex;flex-direction:column;gap:6px;padding-top:4px;}
+.pl-v-stop{
+  width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);color:#99a;font-family:var(--font-body);
+  font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;
+  transition:background .15s;
+}
+.pl-v-stop:hover{background:rgba(255,255,255,.08);}
+.pl-v-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.pl-v-btn{
+  padding:9px;border-radius:8px;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);color:#dde;font-family:var(--font-body);
+  font-size:11px;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  transition:background .15s,border-color .15s;
+}
+.pl-v-btn:hover{background:rgba(255,255,255,.08);}
+.pl-v-btn.end{background:rgba(255,68,68,.1);border-color:rgba(255,68,68,.3);color:#ff6666;}
+.pl-v-btn.end:hover{background:rgba(255,68,68,.2);}
+
+/* ── Input area ── */
+#pl-input-area{
+  padding:8px 10px 10px;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0;
+}
+.pl-media-bar{display:flex;align-items:center;gap:2px;margin-bottom:6px;}
+.pl-media-btn{
+  width:30px;height:30px;border:none;background:transparent;cursor:pointer;
+  color:#667;display:flex;align-items:center;justify-content:center;border-radius:6px;
+  transition:background .15s,color .15s;
+}
+.pl-media-btn:hover{background:rgba(255,255,255,.06);color:#99a;}
+.pl-media-btn.listening{color:var(--cyan);}
+.pl-att-count{
+  margin-left:4px;font-size:10px;color:var(--cyan);font-weight:700;
+  background:rgba(0,229,255,.1);padding:1px 6px;border-radius:999px;
+  font-family:var(--font-body);
+}
+.pl-input-row{display:flex;gap:6px;align-items:center;}
+#pl-input{
+  flex:1;background:#1c1c2e;border:1px solid rgba(255,255,255,.1);border-radius:8px;
+  padding:9px 12px;font-size:13px;color:#dde;font-family:var(--font-body);outline:none;
+  transition:border-color .18s;
+}
+#pl-input:focus{border-color:rgba(0,229,255,.35);}
+#pl-input::placeholder{color:#445;}
+.pl-send-btn{
+  width:36px;height:36px;border-radius:8px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .15s,transform .15s;flex-shrink:0;
+}
+.pl-send-btn:hover{opacity:.85;transform:scale(1.05);}
+.pl-send-btn:disabled{opacity:.3;pointer-events:none;}
+
+/* ── Footer ── */
+.pl-footer{
+  padding:6px 14px;font-size:10px;color:#445;letter-spacing:.04em;text-align:center;
+  border-top:1px solid rgba(255,255,255,.04);flex-shrink:0;
+}
+.pl-footer a{color:#556;text-decoration:none;}
+
+/* ── Speaker toggle (in header) ── */
+.pl-spk-on,.pl-spk-off{display:block;}
+
+@media(max-width:500px){
+  #pl-panel{width:calc(100vw - 20px);right:10px;bottom:82px;}
+  #pl-fab{right:16px;bottom:18px;}
+}
+</style>
+
+<!-- FAB button -->
+<button id="pl-fab" onclick="plToggle()" title="PEAK AI">
+  <svg id="pl-ico-chat" width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M26 78 C8 65 7 44 13 30 C19 15 36 8 52 12 C68 16 77 30 73 48 C69 63 53 68 40 70 C28 72 24 78 26 78Z"
+          fill="rgba(255,255,255,.22)" stroke="rgba(255,255,255,.65)" stroke-width="2.5"/>
+    <circle cx="55" cy="36" r="22" fill="rgba(5,5,14,.92)"/>
+    <circle cx="48" cy="33" r="5.5" fill="#00e5ff" opacity=".95"/>
+    <circle cx="48" cy="33" r="2.2" fill="rgba(5,5,14,.7)"/>
+    <circle cx="62" cy="33" r="5.5" fill="#00e5ff" opacity=".95"/>
+    <circle cx="62" cy="33" r="2.2" fill="rgba(5,5,14,.7)"/>
+    <path d="M47 43 Q55 50 63 43" stroke="#00e5ff" stroke-width="2.8" fill="none" stroke-linecap="round" opacity=".9"/>
+  </svg>
+  <svg id="pl-ico-close" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(4,4,14,.9)" stroke-width="2.5" stroke-linecap="round" style="display:none">
+    <path d="M18 6 6 18M6 6l12 12"/>
+  </svg>
+</button>
+
+<!-- Main panel -->
+<div id="pl-panel">
+
+  <!-- Header -->
+  <div class="pl-hdr">
+    <div class="pl-hdr-av">
+      <svg width="18" height="18" viewBox="0 0 100 100" fill="none">
+        <path d="M26 78 C8 65 7 44 13 30 C19 15 36 8 52 12 C68 16 77 30 73 48 C69 63 53 68 40 70 C28 72 24 78 26 78Z" fill="rgba(255,255,255,.3)" stroke="rgba(255,255,255,.7)" stroke-width="3"/>
+        <circle cx="55" cy="36" r="21" fill="rgba(5,5,14,.9)"/>
+        <circle cx="48" cy="33" r="5.5" fill="#00e5ff"/><circle cx="48" cy="33" r="2.2" fill="rgba(5,5,14,.7)"/>
+        <circle cx="62" cy="33" r="5.5" fill="#00e5ff"/><circle cx="62" cy="33" r="2.2" fill="rgba(5,5,14,.7)"/>
+        <path d="M47 43 Q55 50 63 43" stroke="#00e5ff" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="pl-hdr-title">
+      PEAK AI<span class="pl-online"></span>
+      <div class="pl-hdr-sub">Shopping Assistant</div>
+      <div id="pl-call-info">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.15h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span id="pl-timer">00:00</span>
+      </div>
+    </div>
+    <!-- mute -->
+    <button class="pl-hdr-btn active" id="pl-mute-btn" onclick="plMuteToggle()" title="Audio">
+      <svg id="pl-spk-on" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      <svg id="pl-spk-off" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+    </button>
+    <!-- voice toggle -->
+    <button class="pl-hdr-btn" id="pl-voice-btn" onclick="plVoiceToggle()" title="Voice Mode">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.15h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    </button>
+    <!-- expand -->
+    <button class="pl-hdr-btn" id="pl-expand-btn" onclick="plExpand()" title="Expand">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+    </button>
+    <!-- minimize -->
+    <button class="pl-hdr-btn" onclick="plMinimize()" title="Minimize">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+    <!-- close -->
+    <button class="pl-hdr-btn" onclick="plToggle()" title="Close">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Body -->
+  <div id="pl-body">
+
+    <!-- Welcome -->
+    <div id="pl-welcome">
+      <div class="pl-w-avatar">
+        <svg width="52" height="52" viewBox="0 0 100 100" fill="none">
+          <path d="M26 78 C8 65 7 44 13 30 C19 15 36 8 52 12 C68 16 77 30 73 48 C69 63 53 68 40 70 C28 72 24 78 26 78Z" fill="rgba(0,229,255,.16)" stroke="rgba(0,229,255,.45)" stroke-width="2"/>
+          <circle cx="55" cy="36" r="22" fill="#0d0d1c"/>
+          <circle cx="48" cy="33" r="6" fill="#00e5ff" opacity=".95"/><circle cx="48" cy="33" r="2.4" fill="#0d0d1c"/>
+          <circle cx="62" cy="33" r="6" fill="#00e5ff" opacity=".95"/><circle cx="62" cy="33" r="2.4" fill="#0d0d1c"/>
+          <path d="M47 43 Q55 50 63 43" stroke="#00e5ff" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="pl-w-name">PEAK AI</div>
+      <div class="pl-w-sub">Your personal shopping assistant to find the perfect shoe.</div>
+      <div class="pl-suggestions">
+        <button class="pl-sug-btn" onclick="_plHandleChip('Road running shoes')">🏃 Road running shoes</button>
+        <button class="pl-sug-btn" onclick="_plHandleChip('Trail shoes for rough terrain')">🏔️ Trail shoes for rough terrain</button>
+        <button class="pl-sug-btn" onclick="_plHandleChip('I have a race — competition shoes')">🥇 I have a race — competition shoes</button>
+        <button class="pl-sug-btn" onclick="_plHandleChip('Help me find the right size')">📏 Help me find the right size</button>
+        <button class="pl-sug-btn" onclick="_plHandleChip('Looking for a gift for a runner')">🎁 Looking for a gift for a runner</button>
+        <button class="pl-sug-btn" onclick="_plHandleChip('Show me the latest arrivals')">✨ Show me the latest arrivals</button>
+      </div>
+    </div>
+
+    <!-- Chat messages -->
+    <div id="pl-msgs"></div>
+
+    <!-- Attachment pending strip -->
+    <div id="pl-att-strip"></div>
+
+    <!-- Camera overlay -->
+    <div id="pl-cam-overlay">
+      <video id="pl-cam-video" autoplay playsinline muted></video>
+      <canvas id="pl-cam-canvas" style="display:none"></canvas>
+      <div class="pl-cam-bar">
+        <button onclick="_plCamCancel()">Cancel</button>
+        <button class="primary" onclick="_plCamCapture()">📷 Take Photo</button>
+      </div>
+    </div>
+
+    <!-- Voice panel -->
+    <div id="pl-voice-panel">
+      <div class="pl-v-id">
+        <div class="pl-v-id-av">
+          <svg width="20" height="20" viewBox="0 0 100 100" fill="none">
+            <path d="M26 78 C8 65 7 44 13 30 C19 15 36 8 52 12 C68 16 77 30 73 48 C69 63 53 68 40 70 C28 72 24 78 26 78Z" fill="rgba(255,255,255,.3)" stroke="rgba(255,255,255,.7)" stroke-width="3"/>
+            <circle cx="55" cy="36" r="21" fill="rgba(5,5,14,.9)"/>
+            <circle cx="48" cy="33" r="5.5" fill="#00e5ff"/><circle cx="48" cy="33" r="2.2" fill="rgba(5,5,14,.7)"/>
+            <circle cx="62" cy="33" r="5.5" fill="#00e5ff"/><circle cx="62" cy="33" r="2.2" fill="rgba(5,5,14,.7)"/>
+            <path d="M47 43 Q55 50 63 43" stroke="#00e5ff" stroke-width="3" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="pl-v-id-name">PEAK AI</div>
+          <div class="pl-v-id-sub">Voice Mode active</div>
+        </div>
+      </div>
+      <div class="pl-waveform">
+        <div class="pl-wbar"></div><div class="pl-wbar"></div><div class="pl-wbar"></div>
+        <div class="pl-wbar"></div><div class="pl-wbar"></div><div class="pl-wbar"></div>
+        <div class="pl-wbar"></div><div class="pl-wbar"></div><div class="pl-wbar"></div>
+      </div>
+      <div class="pl-v-status" id="pl-v-status">Waiting…</div>
+      <div class="pl-v-interim" id="pl-v-interim"></div>
+      <div class="pl-v-last" id="pl-v-last">Speak to start. Ask for advice on running, trail, racing or outdoor shoes.</div>
+      <div class="pl-v-ctrl">
+        <button class="pl-v-stop" id="pl-v-stop" style="display:none" onclick="_plVoiceStopSpeak()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+          Stop response
+        </button>
+        <div class="pl-v-btn-row">
+          <button class="pl-v-btn" onclick="plVoiceToggle()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Back to chat
+          </button>
+          <button class="pl-v-btn end" onclick="plVoiceToggle()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.42 19.42 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.15h3a2 2 0 0 1 2 1.72 12.05 12.05 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.58 8.96A16 16 0 0 0 10.68 13.31z"/><line x1="23" y1="1" x2="1" y2="23"/></svg>
+            End call
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end #pl-body -->
+
+  <!-- Input area -->
+  <div id="pl-input-area">
+    <div class="pl-media-bar">
+      <button class="pl-media-btn" id="pl-mic" onclick="plMicToggle()" title="Microfono">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+      <button class="pl-media-btn" onclick="document.getElementById('pl-photo-input').click()" title="Attach photo">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      </button>
+      <button class="pl-media-btn" onclick="_plCamOpen()" title="Fotocamera">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </button>
+      <span id="pl-att-badge" style="display:none" class="pl-att-count">0</span>
+    </div>
+    <div class="pl-input-row">
+      <input id="pl-input" type="text" placeholder="Type a message…" onkeydown="if(event.key==='Enter')plSend()"/>
+      <button class="pl-send-btn" onclick="plSend()" id="pl-send" title="Invia">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(4,4,14,.9)" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+    <input type="file" id="pl-photo-input" accept="image/*" multiple style="display:none" onchange="_plPhotoAdded(this)">
+  </div>
+
+  <div class="pl-footer">
+    <a href="#">Privacy Policy</a> &nbsp;|&nbsp; AI Agent powered by SAP
+  </div>
+
+</div><!-- end #pl-panel -->
+
+<script>
+// ═══════════════════════════════════════════════════
+//  PEAK AI — Enhanced Shopping Assistant
+// ═══════════════════════════════════════════════════
+
+// ── Products ──
+const PL_P = {
+  apex:{id:'apex',name:'Apex Pro',price:189,ps:'€189',cat:'running',act:['running','road'],tags:['bestseller'],
+    desc:'ZoomX foam, TPU plate, 10mm drop — top choice for advanced runners.',
+    det:'High-reactivity ZoomX foam for maximum propulsion on asphalt. Dual-density EVA midsole, ultra-light Flyknit upper, 10mm drop. Ideal for advanced runners and long distances.',
+    mat:'Flyknit + dual-density EVA',drop:'10mm',wt:'248g',
+    colors:[{n:'Midnight Black',h:'#1a1a2e'},{n:'Arctic White',h:'#f5f5f5'},{n:'Cyber Cyan',h:'#00e5ff'}],
+    sizes:['38','39','40','41','42','43','44','45'],
+    img:'images/Apex Pro.jpeg'},
+  ridge:{id:'ridge',name:'Ridge X',price:159,ps:'€159',cat:'trail',act:['trail','outdoor'],tags:['bestseller'],
+    desc:'Vibram Megagrip, meta-rocker, 4.5mm lugs — extreme grip on any terrain.',
+    det:'Extreme grip with Vibram Megagrip sole on any terrain. Meta-rocker for fluid transitions, reinforced toe cap for rock protection, breathable mesh upper, 4.5mm lugs.',
+    mat:'Reinforced mesh + Vibram',drop:'8mm',wt:'285g',
+    colors:[{n:'Forest Green',h:'#2d5a3d'},{n:'Slate Grey',h:'#7a8b96'},{n:'Terra Orange',h:'#c8581a'}],
+    sizes:['38','39','40','41','42','43','44','45'],
+    img:'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=600&q=80'},
+  velocity:{id:'velocity',name:'Velocity V3',price:229,ps:'€229',cat:'racing',act:['racing','road'],tags:['new-arrival'],
+    desc:'Full-length carbon plate, ultra-reactive foam, 4mm drop.',
+    det:'Top-of-the-line race shoe. Full-length carbon plate for maximum propulsion. Ultra-reactive foam, ultra-light Vaporweave upper, 4mm drop. From 5K to marathon.',
+    mat:'Vaporweave + carbon',drop:'4mm',wt:'188g',
+    colors:[{n:'Void Black',h:'#0a0a14'},{n:'Electric Purple',h:'#9b4dff'},{n:'Race Red',h:'#ff2d5a'}],
+    sizes:['38','39','40','41','42','43','44','45'],
+    img:'images/Velocity V3.jpeg'},
+  summit:{id:'summit',name:'Summit Lite',price:249,ps:'€249',cat:'outdoor',act:['outdoor','hiking','trekking'],tags:['new-arrival'],
+    desc:'OrthoShield waterproof, mid-cut, multi-terrain sole.',
+    det:'Lightweight mid-cut mountain boot for demanding outings. OrthoShield waterproof breathable membrane, ankle support, multi-terrain sole with deep lugs.',
+    mat:'Mesh + OrthoShield',drop:'6mm',wt:'340g',
+    colors:[{n:'Alpine Stone',h:'#9a8e82'},{n:'Deep Navy',h:'#1c2b4a'},{n:'Olive Drab',h:'#4a5a30'}],
+    sizes:['38','39','40','41','42','43','44','45'],
+    img:'images/summit_lite.jpeg'},
+  stride:{id:'stride',name:'Stride S1',price:129,ps:'€129',cat:'running',act:['running','road','beginner'],tags:['new-arrival'],
+    desc:'Reactive EVA, wide toe box, 8mm drop — entry-level for long distances.',
+    det:'Entry-level shoe with wide toe box for maximum comfort. Reactive EVA, breathable mesh upper, 8mm drop. Perfect for long distances and wide feet.',
+    mat:'Mesh + EVA',drop:'8mm',wt:'280g',
+    colors:[{n:'Pure White',h:'#f5f5f5'},{n:'Cyan Rush',h:'#00e5ff'},{n:'Midnight',h:'#1a1a2e'}],
+    sizes:['38','39','40','41','42','43','44','45'],
+    img:'images/stride_s1.jpeg'},
+  flash:{id:'flash',name:'Flash 2.0',price:175,ps:'€175',cat:'racing',act:['racing','road'],tags:['new-arrival'],
+    desc:'Ultra-light road racer, 4mm drop, from 5K to half marathon.',
+    det:'Road racer for fast runners. Ultra-light construction, 4mm drop, high-energy-return foam. Seamless upper with no friction. Ideal 5K–21K.',
+    mat:'Seamless knit + foam',drop:'4mm',wt:'198g',
+    colors:[{n:'Flash Pink',h:'#ff2d8a'},{n:'Neon Yellow',h:'#ccff00'},{n:'Carbon',h:'#2a2a2a'}],
+    sizes:['38','39','40','41','42','43','44','45'],
+    img:'images/flash_2.0.jpeg'},
+  canyon:{id:'canyon',name:'Canyon XT',price:199,ps:'€199',cat:'trail',act:['trail','outdoor','waterproof'],tags:['new-arrival'],
+    desc:'Gore-Tex, 5mm lugs, meta-rocker — full protection in any weather.',
+    det:'Waterproof trail shoe with certified Gore-Tex membrane. 5mm lugs for muddy terrain, meta-rocker for smooth transitions, reinforced toe cap. Ideal choice for uncertain weather.',
+    mat:'Gore-Tex + mesh',drop:'8mm',wt:'310g',
+    colors:[{n:'Canyon Orange',h:'#ff6b00'},{n:'Storm Grey',h:'#5a6070'},{n:'Black Out',h:'#111118'}],
+    sizes:['38','39','40','41','42','43','44','45'],
+    img:'images/kanyion_xt.jpeg'},
+  power:{id:'power',name:'Power Cross',price:99,ps:'€99',cat:'training',act:['training','gym','crossfit'],tags:['sale'],
+    desc:'Cross training, flat sole, lateral support — on sale at €99.',
+    det:'Versatile cross training shoe with flat sole for stability in weightlifting. Reinforced lateral support for side-to-side movements, breathable mesh, durable build.',
+    mat:'Mesh + flat rubber',drop:'4mm',wt:'295g',
+    colors:[{n:'Power Black',h:'#1a1a1a'},{n:'Volt Green',h:'#7fff00'},{n:'Pure White',h:'#f5f5f5'}],
+    sizes:['38','39','40','41','42','43','44','45'],
+    img:'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=600&q=80'}
+};
+const PL_LIST = Object.values(PL_P);
+
+// ── State ──
+let _plOpen=false, _plMute=false, _plMode='chat', _plMinimized=false, _plExpanded=false;
+let _plVoiceState='idle'; // idle|connecting|listening|processing|speaking
+let _plListening=false, _plRec=null, _plTimerInt=null, _plCallSecs=0;
+let _plAttachments=[];
+let _plCamStream=null;
+
+// Conversation context
+let _ctx={
+  intent:null, recipient:null, budget:null, activity:null,
+  activeId:null, recentIds:[], pendingAddId:null, pendingSize:null,
+  cart:[], turnCount:0
+};
+
+// ── Panel controls ──
+function plToggle(){
+  _plOpen=!_plOpen;
+  const p=document.getElementById('pl-panel');
+  p.classList.toggle('open',_plOpen);
+  document.getElementById('pl-ico-chat').style.display=_plOpen?'none':'block';
+  document.getElementById('pl-ico-close').style.display=_plOpen?'block':'none';
+  if(!_plOpen){_plStopVoice();_plMinimized=false;_plExpanded=false;p.classList.remove('minimized','expanded');}
+}
+function plExpand(){
+  _plExpanded=!_plExpanded;
+  _plMinimized=false;
+  const p=document.getElementById('pl-panel');
+  p.classList.toggle('expanded',_plExpanded);
+  p.classList.remove('minimized');
+  document.getElementById('pl-expand-btn').classList.toggle('active',_plExpanded);
+}
+function plMinimize(){
+  _plMinimized=!_plMinimized;
+  _plExpanded=false;
+  const p=document.getElementById('pl-panel');
+  p.classList.toggle('minimized',_plMinimized);
+  p.classList.remove('expanded');
+  document.getElementById('pl-expand-btn').classList.remove('active');
+}
+
+// ── Mute ──
+function plMuteToggle(){
+  _plMute=!_plMute;
+  document.getElementById('pl-spk-on').style.display=_plMute?'none':'block';
+  document.getElementById('pl-spk-off').style.display=_plMute?'block':'none';
+  document.getElementById('pl-mute-btn').classList.toggle('active',!_plMute);
+  if(_plMute&&window.speechSynthesis)window.speechSynthesis.cancel();
+}
+
+// ── TTS ──
+function _plSpeak(text){
+  if(_plMute||!('speechSynthesis' in window))return;
+  window.speechSynthesis.cancel();
+  const plain=text.replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&nbsp;/g,' ')
+    .replace(/[👟🏃🏔️🌿🚀📦📏🥇🎁✨•→←]/g,' ')
+    .replace(/€(\d)/g,'$1 euro').replace(/\s+/g,' ').trim().slice(0,400);
+  if(!plain)return;
+  const utt=new SpeechSynthesisUtterance(plain);
+  utt.lang='en-US';utt.rate=1.0;utt.pitch=1.0;
+  const go=()=>{
+    const voices=window.speechSynthesis.getVoices();
+    const v=voices.find(v=>v.lang==='en-US')||voices.find(v=>v.lang.startsWith('en-'))||voices.find(v=>v.lang.startsWith('en'));
+    if(!v)return;
+    utt.voice=v;
+    if(_plMode==='voice'){
+      _plSetVoiceState('speaking');
+      utt.onend=()=>{if(_plMode==='voice'&&_plVoiceState==='speaking'){_plSetVoiceState('listening');_startSR(true);}};
+    }
+    window.speechSynthesis.speak(utt);
+  };
+  if(window.speechSynthesis.getVoices().length>0)go();
+  else window.speechSynthesis.addEventListener('voiceschanged',go,{once:true});
+}
+
+// ── Voice mode ──
+function plVoiceToggle(){
+  if(_plMode==='voice'){_plStopVoice();}
+  else{_plStartVoice();}
+}
+function _plStartVoice(){
+  _plMode='voice';
+  document.getElementById('pl-msgs').classList.remove('on');
+  document.getElementById('pl-welcome').style.display='none';
+  document.getElementById('pl-voice-panel').classList.add('on');
+  document.getElementById('pl-input-area').style.display='none';
+  document.getElementById('pl-voice-btn').classList.add('voice-on');
+  document.getElementById('pl-call-info').classList.add('on');
+  _plCallSecs=0;
+  _plTimerInt=setInterval(()=>{
+    _plCallSecs++;
+    const m=String(Math.floor(_plCallSecs/60)).padStart(2,'0');
+    const s=String(_plCallSecs%60).padStart(2,'0');
+    document.getElementById('pl-timer').textContent=m+':'+s;
+  },1000);
+  _plSetVoiceState('connecting');
+  setTimeout(()=>{_plSetVoiceState('listening');_startSR(true);},400);
+}
+function _plStopVoice(){
+  _plMode='chat';
+  if(_plRec){try{_plRec.stop();}catch(e){}_plRec=null;}
+  if(window.speechSynthesis)window.speechSynthesis.cancel();
+  clearInterval(_plTimerInt);
+  document.getElementById('pl-voice-panel').classList.remove('on','listening','speaking','processing');
+  document.getElementById('pl-voice-btn').classList.remove('voice-on');
+  document.getElementById('pl-call-info').classList.remove('on');
+  document.getElementById('pl-input-area').style.display='';
+  _plSetVoiceState('idle');
+  const hasMsgs=document.getElementById('pl-msgs').children.length>0;
+  if(hasMsgs){document.getElementById('pl-msgs').classList.add('on');}
+  else{document.getElementById('pl-welcome').style.display='';}
+  _plListening=false;
+}
+function _plSetVoiceState(state){
+  _plVoiceState=state;
+  const vp=document.getElementById('pl-voice-panel');
+  vp.classList.remove('listening','speaking','processing');
+  if(state==='listening'){vp.classList.add('listening');document.getElementById('pl-v-status').textContent='Listening…';}
+  else if(state==='speaking'){vp.classList.add('speaking');document.getElementById('pl-v-status').textContent='Responding…';}
+  else if(state==='processing'){vp.classList.add('processing');document.getElementById('pl-v-status').textContent='Processing…';}
+  else if(state==='connecting'){document.getElementById('pl-v-status').textContent='Connecting…';}
+  else{document.getElementById('pl-v-status').textContent='Waiting…';}
+  document.getElementById('pl-v-stop').style.display=(state==='speaking')?'flex':'none';
+}
+function _plVoiceStopSpeak(){
+  if(window.speechSynthesis)window.speechSynthesis.cancel();
+  if(_plMode==='voice'){_plSetVoiceState('listening');_startSR(true);}
+}
+
+// ── Speech recognition ──
+function plMicToggle(){
+  if(_plListening){try{_plRec.stop();}catch(e){}return;}
+  _startSR(false);
+}
+function _startSR(liveMode){
+  if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window))return;
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  _plRec=new SR();
+  _plRec.lang='en-US';
+  _plRec.continuous=liveMode;
+  _plRec.interimResults=liveMode;
+  _plRec.onstart=()=>{_plListening=true;if(!liveMode)document.getElementById('pl-mic').classList.add('listening');};
+  _plRec.onresult=(e)=>{
+    const res=e.results[e.results.length-1];
+    if(liveMode&&!res.isFinal){document.getElementById('pl-v-interim').textContent=res[0].transcript;return;}
+    const tr=res[0].transcript.trim();
+    document.getElementById('pl-v-interim').textContent='';
+    if(!liveMode){document.getElementById('pl-input').value=tr;plSend();}
+    else{_plSetVoiceState('processing');_plHandleVoiceInput(tr);}
+  };
+  _plRec.onerror=(e)=>{
+    _plListening=false;document.getElementById('pl-v-interim').textContent='';
+    if(e.error!=='aborted'&&!liveMode)_plBot({text:'Microphone error. Check permissions.',spk:'Microphone error.',followUps:['Try again','Type here']});
+  };
+  _plRec.onend=()=>{
+    _plListening=false;
+    if(!liveMode)document.getElementById('pl-mic').classList.remove('listening');
+    if(liveMode&&_plMode==='voice'&&_plVoiceState==='listening')setTimeout(()=>_startSR(true),200);
+  };
+  _plRec.start();
+}
+function _plHandleVoiceInput(text){
+  const resp=_buildResponse(text,[]);
+  const html=resp.products?`<div>${resp.text}</div>${_renderCarousel(resp.products)}`:(resp.component||resp.text);
+  document.getElementById('pl-v-last').innerHTML=html;
+  _ctx.turnCount++;
+  if(resp.speak){_plSpeak(resp.speak);}
+  else{_plSpeak(resp.text);}
+}
+
+// ── Camera ──
+function _plCamOpen(){
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(stream=>{
+    _plCamStream=stream;
+    const v=document.getElementById('pl-cam-video');v.srcObject=stream;
+    document.getElementById('pl-cam-overlay').classList.add('on');
+  }).catch(()=>{});
+}
+function _plCamCapture(){
+  const v=document.getElementById('pl-cam-video');
+  const c=document.getElementById('pl-cam-canvas');
+  c.width=v.videoWidth;c.height=v.videoHeight;
+  c.getContext('2d').drawImage(v,0,0);
+  c.toBlob(blob=>{
+    const url=URL.createObjectURL(blob);
+    _plAttachments.push({type:'image',url,file:blob});
+    _plUpdateAttachStrip();
+    _plCamCancel();
+  },'image/jpeg',0.9);
+}
+function _plCamCancel(){
+  if(_plCamStream){_plCamStream.getTracks().forEach(t=>t.stop());_plCamStream=null;}
+  document.getElementById('pl-cam-overlay').classList.remove('on');
+}
+function _plPhotoAdded(inp){
+  Array.from(inp.files).forEach(f=>{
+    const url=URL.createObjectURL(f);
+    _plAttachments.push({type:'image',url,file:f});
+  });
+  inp.value='';
+  _plUpdateAttachStrip();
+}
+function _plUpdateAttachStrip(){
+  const strip=document.getElementById('pl-att-strip');
+  const badge=document.getElementById('pl-att-badge');
+  if(!_plAttachments.length){strip.classList.remove('on');badge.style.display='none';return;}
+  badge.style.display='';badge.textContent=_plAttachments.length;
+  strip.innerHTML='';strip.classList.add('on');
+  _plAttachments.forEach((a,i)=>{
+    const t=document.createElement('div');t.className='pl-att-tile';
+    if(a.type==='image'){const img=document.createElement('img');img.src=a.url;t.appendChild(img);}
+    const d=document.createElement('div');d.className='pl-att-del';d.textContent='✕';
+    d.onclick=()=>{_plAttachments.splice(i,1);_plUpdateAttachStrip();};
+    t.appendChild(d);strip.appendChild(t);
+  });
+}
+
+// ── Message send ──
+function plSend(){
+  const inp=document.getElementById('pl-input');
+  const text=inp.value.trim();
+  const atts=[..._plAttachments];
+  if(!text&&!atts.length)return;
+  inp.value='';
+  _plAttachments=[];_plUpdateAttachStrip();
+  _plShowChat();
+  _plUser(text||'📷 Photo attached');
+  const resp=_buildResponse(text,atts);
+  _plBotDelay(resp);
+}
+function _plHandleChip(label){
+  _plShowChat();
+  _plUser(label);
+  const resp=_buildResponse(label,[]);
+  _plBotDelay(resp);
+}
+function _plShowChat(){
+  document.getElementById('pl-welcome').style.display='none';
+  document.getElementById('pl-msgs').classList.add('on');
+}
+
+// ── Message rendering ──
+const _botIco=`<div class="pl-bot-ico"><svg width="14" height="14" viewBox="0 0 100 100" fill="none"><path d="M26 78 C8 65 7 44 13 30 C19 15 36 8 52 12 C68 16 77 30 73 48 C69 63 53 68 40 70 C28 72 24 78 26 78Z" fill="rgba(255,255,255,.22)" stroke="rgba(255,255,255,.65)" stroke-width="3"/><circle cx="55" cy="36" r="21" fill="rgba(5,5,14,.9)"/><circle cx="48" cy="33" r="5" fill="#00e5ff"/><circle cx="48" cy="33" r="2" fill="rgba(5,5,14,.7)"/><circle cx="62" cy="33" r="5" fill="#00e5ff"/><circle cx="62" cy="33" r="2" fill="rgba(5,5,14,.7)"/><path d="M47 43 Q55 50 63 43" stroke="#00e5ff" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>`;
+
+function _plUser(txt){
+  const box=document.getElementById('pl-msgs');
+  const d=document.createElement('div');d.className='pl-msg user';
+  d.innerHTML=`<div class="pl-bubble">${txt}</div>`;
+  box.appendChild(d);box.scrollTop=box.scrollHeight;
+}
+
+function _plBotDelay(resp){
+  const box=document.getElementById('pl-msgs');
+  const tid='t'+Date.now();
+  const d=document.createElement('div');d.className='pl-msg bot';d.id=tid;
+  d.innerHTML=`${_botIco}<div class="pl-bubble"><div class="pl-typing"><i></i><i></i><i></i></div></div>`;
+  box.appendChild(d);box.scrollTop=box.scrollHeight;
+  setTimeout(()=>{
+    const el=document.getElementById(tid);if(el)el.remove();
+    _plBot(resp);
+  },800+Math.random()*400);
+}
+
+function _plBot(resp){
+  const box=document.getElementById('pl-msgs');
+  const w=document.createElement('div');w.className='pl-msg bot';
+  let h=_botIco+`<div style="flex:1;min-width:0"><div class="pl-bubble">${resp.text}</div>`;
+  if(resp.component){h+=`<div class="pl-comp">${resp.component}</div>`;}
+  else if(resp.products&&resp.products.length){h+=`<div class="pl-comp">${_renderCarousel(resp.products)}</div>`;}
+  if(resp.followUps&&resp.followUps.length){
+    h+=`<div class="pl-chips">${resp.followUps.map(c=>`<button class="pl-chip" onclick="_plHandleChip('${c.replace(/'/g,"\\'")}'">${c}</button>`).join('')}</div>`;
+  }
+  h+=`</div>`;
+  w.innerHTML=h;box.appendChild(w);box.scrollTop=box.scrollHeight;
+}
+
+// ── Rich component renderers ──
+function _renderCarousel(products,label=''){
+  const cards=products.map(p=>{
+    const dots=p.colors.map(c=>`<span class="pl-cdot" style="background:${c.h}" title="${c.n}"></span>`).join('');
+    return `<div class="pl-c-card">
+      <img src="${p.img}" alt="${p.name}" loading="lazy"/>
+      <div class="pl-c-info">
+        <div class="pl-c-name">${p.name}</div>
+        <div class="pl-c-price">${p.ps}</div>
+        <div class="pl-c-dots">${dots}</div>
+        <button class="pl-c-btn" onclick="_plHandleChip('Tell me more about ${p.name.replace(/'/g,"\\'")}')">Details</button>
+      </div>
+    </div>`;
+  }).join('');
+  return (label?`<div class="pl-comp-label">${label}</div>`:'')+`<div class="pl-carousel">${cards}</div>`;
+}
+
+function _renderDetail(p){
+  const dots=p.colors.map(c=>`<span class="pl-cdot" style="background:${c.h}" title="${c.n}"></span>`).join('');
+  const sizes=p.sizes.slice(0,6).map(s=>`<span class="pl-size-chip">${s}</span>`).join('');
+  return `<div class="pl-det-card">
+    <div class="pl-det-top">
+      <img class="pl-det-img" src="${p.img}" alt="${p.name}" loading="lazy"/>
+      <div class="pl-det-body">
+        <div class="pl-det-name">${p.name}</div>
+        <div class="pl-det-price">${p.ps}</div>
+        <div class="pl-det-desc">${p.det}</div>
+        <div class="pl-det-meta"><strong>Material</strong> ${p.mat}</div>
+        <div class="pl-det-meta"><strong>Drop</strong> ${p.drop} · ${p.wt}</div>
+        <div class="pl-det-dots">${dots}</div>
+        <div class="pl-det-sizes">${sizes}</div>
+      </div>
+    </div>
+    <div class="pl-det-footer">
+      <button onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">↗ View in catalog</button>
+      <button onclick="_plHandleChip('Add ${p.name.replace(/'/g,"\\'")} to cart')">+ Add to Cart</button>
+    </div>
+  </div>`;
+}
+
+function _renderComparison(products){
+  const n=products.length;
+  const grid=`grid-template-columns:52px${' 1fr'.repeat(n)}`;
+  let head=`<div class="pl-cmp-head" style="${grid}"><div class="pl-cmp-label"></div>`;
+  products.forEach(p=>{head+=`<div class="pl-cmp-head-cell"><img src="${p.img}" alt="${p.name}"/><div>${p.name}</div></div>`;});
+  head+='</div>';
+  const rows=[
+    ['Price', p=>p.ps],
+    ['Category', p=>p.cat],
+    ['Drop', p=>p.drop],
+    ['Weight', p=>p.wt],
+    ['Material', p=>p.mat],
+  ];
+  let body='';
+  rows.forEach(([label,fn])=>{
+    body+=`<div class="pl-cmp-row" style="${grid}"><div class="pl-cmp-label">${label}</div>`;
+    products.forEach(p=>{body+=`<div class="pl-cmp-cell">${fn(p)}</div>`;});
+    body+='</div>';
+  });
+  let foot=`<div class="pl-cmp-foot" style="display:grid;grid-template-columns:${'1fr '.repeat(n).trim()}">`;
+  products.forEach(p=>{foot+=`<button onclick="_plHandleChip('Add ${p.name.replace(/'/g,"\\'")} to cart')">+ ${p.name.split(' ')[0]}</button>`;});
+  foot+='</div>';
+  return `<div class="pl-cmp-table">${head}${body}${foot}</div>`;
+}
+
+function _renderCart(cart,justAddedId){
+  if(!cart.length)return`<div class="pl-cart-card"><div class="pl-cart-head">Empty cart</div></div>`;
+  const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const items=cart.map(i=>{
+    const p=PL_P[i.id];
+    const isNew=i.id===justAddedId;
+    return `<div class="pl-cart-item${isNew?' new-item':''}">
+      <img src="${p.img}" alt="${p.name}"/>
+      <div class="pl-cart-item-info">
+        <div class="pl-cart-item-name">${p.name}</div>
+        <div class="pl-cart-item-sub">Size ${i.size} · ${i.color}${i.qty>1?` · ×${i.qty}`:''}</div>
+        ${isNew?`<div class="pl-cart-new-badge">JUST ADDED</div>`:''}
+      </div>
+      <div class="pl-cart-item-price">€${(p.price*i.qty)}</div>
+    </div>`;
+  }).join('');
+  return `<div class="pl-cart-card">
+    <div class="pl-cart-head">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Added to cart · ${cart.length} ${cart.length===1?'item':'items'}
+    </div>
+    <div class="pl-cart-items">${items}</div>
+    <div class="pl-cart-foot">
+      <div class="pl-cart-total">Subtotal: <strong>€${total}</strong></div>
+      <button class="pl-cart-cta" onclick="window.location.href='checkout.html'">Checkout →</button>
+    </div>
+  </div>`;
+}
+
+// ── Cart operations ──
+function _cartAdd(id,size,color){
+  const existing=_ctx.cart.find(i=>i.id===id&&i.size===size&&i.color===color);
+  if(existing){existing.qty++;}
+  else{_ctx.cart.push({id,size,color,qty:1,price:PL_P[id].price});}
+}
+
+// ── Response builder ──
+function _buildResponse(text,attachments){
+  _ctx.turnCount++;
+  const t=text.toLowerCase().trim();
+
+  // 1. Image attachment
+  if(attachments.some(a=>a.type==='image')){
+    const prods=[PL_P.ridge,PL_P.canyon,PL_P.summit];
+    _ctx.recentIds=prods.map(p=>p.id);
+    return{text:'I analyzed the photo. Based on the terrain I see, I recommend these trail and outdoor options:',speak:'I analyzed the photo. For this terrain I recommend trail or waterproof outdoor shoes.',products:prods,followUps:['Tell me more about Ridge X','Gore-Tex or OrthoShield?','I have a specific budget']};
+  }
+
+  // 2. Pending add-to-cart: waiting for size
+  if(_ctx.pendingAddId){
+    const p=PL_P[_ctx.pendingAddId];
+    const foundSize=p.sizes.find(s=>t.includes(s));
+    const foundColor=p.colors.find(c=>t.includes(c.n.toLowerCase().split(' ').pop()));
+    if(foundSize){
+      const color=foundColor?foundColor.n:p.colors[0].n;
+      _cartAdd(p.id,foundSize,color);
+      _ctx.pendingAddId=null;
+      const comp=_renderCart(_ctx.cart,p.id);
+      return{text:`Done! Added <strong>${p.name}</strong> size ${foundSize} (${color}) to your cart.`,speak:`Added ${p.name} size ${foundSize} to your cart.`,component:comp,followUps:['Continue shopping','Add another product','View cart']};
+    }
+    const sizeList=p.sizes.map(s=>`<button class="pl-chip" onclick="_plHandleChip('Size ${s}')">${s}</button>`).join('');
+    return{text:`What size do you wear for the <strong>${p.name}</strong>?`,speak:`What size do you wear for the ${p.name}?`,component:`<div class="pl-chips">${sizeList}</div>`,followUps:[]};
+  }
+
+  // 3. Cart view
+  if(/\b(cart|bag|checkout|proceed|payment|order)\b/.test(t)&&_ctx.cart.length){
+    const comp=_renderCart(_ctx.cart,null);
+    return{text:`Here's your cart with ${_ctx.cart.length} ${_ctx.cart.length===1?'item':'items'}:`,speak:`Your cart has ${_ctx.cart.length} items. Subtotal is ${_ctx.cart.reduce((s,i)=>s+i.price*i.qty,0)} euros.`,component:comp,followUps:['Add more products','Clear cart']};
+  }
+
+  // 4. Add to cart
+  if(/\b(add|buy|want|get|purchase|take)\b/.test(t)&&/\b(cart|bag|it|this|one)\b/.test(t)){
+    const p=_findProduct(t)||(_ctx.activeId&&PL_P[_ctx.activeId])||(_ctx.recentIds[0]&&PL_P[_ctx.recentIds[0]]);
+    if(!p)return _respFallback();
+    const foundSize=p.sizes.find(s=>t.includes(s));
+    if(foundSize){
+      const fc=p.colors.find(c=>t.includes(c.n.toLowerCase().split(' ').pop()));
+      const color=fc?fc.n:p.colors[0].n;
+      _cartAdd(p.id,foundSize,color);
+      _ctx.pendingAddId=null;
+      return{text:`Added! <strong>${p.name}</strong> size ${foundSize} (${color}) is in your cart.`,speak:`Added ${p.name} size ${foundSize} to your cart.`,component:_renderCart(_ctx.cart,p.id),followUps:['Continue shopping','View cart']};
+    }
+    _ctx.pendingAddId=p.id;
+    const sizeList=p.sizes.map(s=>`<button class="pl-chip" onclick="_plHandleChip('Size ${s}')">${s}</button>`).join('');
+    return{text:`Great choice! <strong>${p.name}</strong> — what size do you wear?`,speak:`Great choice for the ${p.name}. What size do you wear?`,component:`<div class="pl-chips">${sizeList}</div>`,followUps:[]};
+  }
+
+  // 5. Comparison
+  if(/\b(compare|versus|vs\.?|difference|which.*better|comparison)\b/.test(t)){
+    const found=_findAllProducts(t);
+    const prods=(found.length>=2)?found.slice(0,3):(_ctx.recentIds.slice(0,2).map(id=>PL_P[id]).filter(Boolean));
+    if(prods.length<2)return{text:'Tell me which models you want to compare!',speak:'Tell me which models you want to compare.',followUps:['Compare Apex Pro and Stride S1','Compare Ridge X and Canyon XT','Compare Velocity V3 and Flash 2.0']};
+    _ctx.recentIds=prods.map(p=>p.id);
+    return{text:`Here's the comparison between <strong>${prods.map(p=>p.name).join('</strong> and <strong>')}</strong>:`,speak:`Comparing ${prods.map(p=>p.name).join(' and ')}.`,component:_renderComparison(prods),followUps:prods.map(p=>`Add ${p.name} to cart`)};
+  }
+
+  // 6. Product detail
+  if(/\b(tell|detail|describe|info|show|spec|about|more)\b/.test(t)){
+    const p=_findProduct(t)||(_ctx.activeId&&PL_P[_ctx.activeId]);
+    if(!p)return{text:'Which model would you like more info on?',speak:'Which model would you like more info on?',products:PL_LIST.slice(0,4),followUps:['Apex Pro','Ridge X','Velocity V3','Canyon XT']};
+    _ctx.activeId=p.id;
+    return{text:`Here are the full details on the <strong>${p.name}</strong>:`,speak:`Details on the ${p.name}: ${p.det}`,component:_renderDetail(p),followUps:[`Add ${p.name} to cart`,`Compare with other models`,'Help with sizing']};
+  }
+
+  // 7. Gift continuation
+  if(_ctx.intent==='gift'){
+    const budgetMatch=t.match(/(\d{2,3})/);
+    if(budgetMatch){_ctx.budget=parseInt(budgetMatch[1]);}
+    const actMatch={running:/running|road|street/i,trail:/trail|mountain|path/i,racing:/race|competi|marathon/i,outdoor:/outdoor|trek|hik/i,training:/gym|training|crossfit/i};
+    for(const [k,r] of Object.entries(actMatch)){if(r.test(t)){_ctx.activity=k;break;}}
+    if(_ctx.budget||_ctx.activity){
+      let prods=PL_LIST.filter(p=>{
+        if(_ctx.budget&&p.price>_ctx.budget)return false;
+        if(_ctx.activity&&!p.act.includes(_ctx.activity))return false;
+        return true;
+      });
+      if(!prods.length)prods=PL_LIST.filter(p=>!_ctx.budget||p.price<=_ctx.budget).slice(0,4);
+      if(!prods.length)prods=[PL_P.power,PL_P.stride];
+      _ctx.recentIds=prods.map(p=>p.id);
+      const budgetStr=_ctx.budget?` under €${_ctx.budget}`:'';
+      const actStr=_ctx.activity?` for ${_ctx.activity}`:'';
+      return{text:`Perfect! Here are my gift picks${actStr}${budgetStr}:`,speak:`Found ${prods.length} gift options${actStr}${budgetStr}.`,products:prods,followUps:['See details','Help with sizing','Gift purchase']};
+    }
+    return{text:`To find the perfect gift, tell me: <strong>what activity does the recipient do?</strong> And do you have a budget?`,speak:`For the gift, tell me what activity they do and if you have a budget.`,followUps:['Road running','Trail & mountain','Gym & training','Budget under €150']};
+  }
+
+  // 8. Gift start
+  if(/\b(gift|present|wife|husband|partner|friend|sister|brother|mom|dad|someone)\b/.test(t)){
+    _ctx.intent='gift';
+    const recMatch=t.match(/(?:for\s+(?:a\s+|my\s+)?)\s*(\w+)/i);
+    _ctx.recipient=recMatch?recMatch[1]:'someone';
+    return{text:`A gift for <strong>${_ctx.recipient}</strong> — great! To find the right shoe, tell me: <strong>what sport or activity do they do?</strong> And do you have a budget?`,speak:`Gift for ${_ctx.recipient}. What sport or activity do they do? Any budget?`,followUps:['Road running','Trail & mountain','Gym','Budget under €150']};
+  }
+
+  // 9. Greeting
+  if(/^(hi|hello|hey|good|howdy|ciao|salve)\b/i.test(t)){
+    return{text:'Hi! I\'m PEAK AI. I can help you find the perfect shoe — running, trail, racing or outdoor. Where do we start?',speak:'Hi! I can help you find the perfect shoe.',followUps:['Road running','Trail & mountain','I have a race','Looking for a gift']};
+  }
+
+  // 10. Budget
+  const bm=t.match(/(?:under|less\s*than|below|max|within|budget)[^\d]*(\d{2,3})/i);
+  if(bm){
+    const budget=parseInt(bm[1]);
+    const prods=PL_LIST.filter(p=>p.price<=budget).sort((a,b)=>b.price-a.price).slice(0,4);
+    _ctx.budget=budget;_ctx.recentIds=prods.map(p=>p.id);
+    if(!prods.length)return{text:`No models under €${budget}. Our most affordable option is the <strong>Power Cross</strong> at €99.`,speak:`No models under ${budget} euros. The most affordable is the Power Cross at 99 euros.`,products:[PL_P.power],followUps:['Show all products']};
+    return{text:`Here are ${prods.length} models under <strong>€${budget}</strong>:`,speak:`Found ${prods.length} models under ${budget} euros.`,products:prods,followUps:prods.map(p=>`Details on ${p.name}`)};
+  }
+
+  // 11. New arrivals
+  if(/\b(new|latest|arrival|recent|just\s*in|novit)\b/.test(t)){
+    const prods=PL_LIST.filter(p=>p.tags.includes('new-arrival'));
+    _ctx.recentIds=prods.map(p=>p.id);
+    return{text:`Here are the <strong>latest arrivals</strong> from PEAKLINE — ${prods.length} new models:`,speak:`Latest PEAKLINE arrivals: ${prods.map(p=>p.name).join(', ')}.`,products:prods,followUps:['Details on Velocity V3','Details on Canyon XT','Compare new arrivals']};
+  }
+
+  // 12. Size help
+  if(/\b(size|sizing|fit|wide|narrow|foot|measurement)\b/.test(t)){
+    return{text:`<strong>PEAKLINE Size Guide</strong><br><br>We use EU sizing. General rules:<ul style="margin:6px 0 0 14px;line-height:1.8"><li>Wide toe box → go up one size</li><li>Narrow feet → standard size</li><li>Trail activity → consider half size up</li></ul><br>Want help choosing a size for a specific model?`,speak:'For sizing: if you have wide feet, go up one size. For trail, half a size up is recommended.',followUps:['Size for Apex Pro','Size for Ridge X','Size for racing shoes']};
+  }
+
+  // 13. Categories
+  const catMap={
+    running:{r:/\b(running|road|asphalt|pavement|jogging|5k|10k|marathon|long\s*distance)\b/,prods:[PL_P.apex,PL_P.stride],text:'For road running I have two picks. The <strong>Apex Pro</strong> (€189) — ZoomX foam, top for advanced runners. The <strong>Stride S1</strong> (€129) — wide toe box, ideal for long distances and beginners.',speak:'For road running: the Apex Pro at 189 euros with ZoomX foam for advanced runners, and the Stride S1 at 129 euros with wide toe box for long distances.',followUps:['Details on Apex Pro','Details on Stride S1','Compare both models','Help with sizing']},
+    trail:{r:/\b(trail|path|dirt|mud|forest|vibram|mountain)\b/,prods:[PL_P.ridge,PL_P.canyon],text:'For trail I have two picks. The <strong>Ridge X</strong> (€159) — Vibram Megagrip, meta-rocker. The <strong>Canyon XT</strong> (€199) — waterproof Gore-Tex, 5mm lugs for wet weather.',speak:'For trail: the Ridge X at 159 euros with Vibram sole, and the Canyon XT at 199 euros with Gore-Tex for uncertain weather.',followUps:['Details on Ridge X','Details on Canyon XT','Compare trail shoes','Which for wet weather?']},
+    racing:{r:/\b(race|racing|competition|marathon|sprint|carbon|competitive)\b/,prods:[PL_P.velocity,PL_P.flash],text:'For racing I have two weapons. The <strong>Velocity V3</strong> (€229) — full-length carbon plate, our flagship. The <strong>Flash 2.0</strong> (€175) — ultra-light road racer, great for 5K to half marathon.',speak:'For racing: the Velocity V3 at 229 euros with carbon plate, and the Flash 2.0 at 175 euros ultra-light road racer.',followUps:['Details on Velocity V3','Details on Flash 2.0','Compare racing shoes','Help with sizing']},
+    outdoor:{r:/\b(outdoor|trekk|hiking|altitude|hut|gore.?tex|alpine)\b/,prods:[PL_P.summit,PL_P.canyon],text:'For outdoor hiking I have two picks. The <strong>Summit Lite</strong> (€249) — mid-cut, OrthoShield waterproof, ankle support. The <strong>Canyon XT</strong> (€199) — Gore-Tex, 5mm lugs, more versatile.',speak:'For outdoor: the Summit Lite at 249 euros mid-cut with OrthoShield, and the Canyon XT at 199 euros with Gore-Tex.',followUps:['Details on Summit Lite','Details on Canyon XT','Compare outdoor','Which for rain and mud?']},
+    training:{r:/\b(trainin|gym|crossfit|fitness|cross\s*training|workout|weights|functional)\b/,prods:[PL_P.power],text:'For cross training in the gym I recommend the <strong>Power Cross</strong> (€99, on sale). Flat sole for stability in weightlifting, lateral support, durable build.',speak:'For the gym I recommend the Power Cross at 99 euros, with flat sole for weights and lateral support.',followUps:['Details on Power Cross','Add Power Cross to cart','Show all products']},
+  };
+  for(const[k,cat] of Object.entries(catMap)){
+    if(cat.r.test(t)){
+      _ctx.activity=k;_ctx.recentIds=cat.prods.map(p=>p.id);_ctx.activeId=cat.prods[0].id;
+      return{text:cat.text,speak:cat.speak,products:cat.prods,followUps:cat.followUps};
+    }
+  }
+
+  // 14. Fallback — bestsellers
+  return _respFallback();
+}
+
+function _respFallback(){
+  const prods=PL_LIST.filter(p=>p.tags.includes('bestseller'));
+  return{text:'I didn\'t quite get that — here are our <strong>bestsellers</strong> to get you started:',speak:'Here are our best-selling models.',products:prods,followUps:['Road running','Trail & mountain','I have a race','Looking for a gift']};
+}
+
+function _findProduct(text){
+  const t=text.toLowerCase();
+  for(const p of PL_LIST){if(t.includes(p.name.toLowerCase()))return p;}
+  const shortcuts={apex:PL_P.apex,ridge:PL_P.ridge,velocity:PL_P.velocity,summit:PL_P.summit,stride:PL_P.stride,flash:PL_P.flash,canyon:PL_P.canyon,power:PL_P.power};
+  for(const[k,p] of Object.entries(shortcuts)){if(t.includes(k))return p;}
+  return null;
+}
+function _findAllProducts(text){
+  const t=text.toLowerCase();
+  return PL_LIST.filter(p=>t.includes(p.name.toLowerCase())||t.includes(p.id));
+}
+
+// ── Init ──
+document.getElementById('pl-welcome').style.display='';
+</script>
+</body>
+</html>
