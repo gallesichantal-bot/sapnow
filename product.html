@@ -242,6 +242,53 @@
     .agent-ready-title { font-size: 13px; font-weight: 700; color: var(--cyan); margin-bottom: 6px; }
     .agent-ready-desc { font-size: 13px; color: #666; line-height: 1.5; }
 
+    /* ── AGENT DASHBOARD ── */
+    .adb-nav-btn{position:relative;background:rgba(0,229,255,.1);border:1.5px solid rgba(0,229,255,.3)!important;border-radius:8px!important;cursor:pointer;color:var(--cyan)!important;padding:6px 8px!important;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+    .adb-nav-btn:hover{background:rgba(0,229,255,.2)!important;}
+    .adb-nav-badge{position:absolute;top:-5px;right:-5px;background:var(--cyan);color:#000;font-size:9px;font-weight:800;min-width:15px;height:15px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px;pointer-events:none;}
+    .adb-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);align-items:flex-start;justify-content:center;padding-top:60px;}
+    .adb-overlay.open{display:flex;}
+    .adb-panel{background:#fff;border-radius:16px;width:100%;max-width:720px;max-height:86vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.55);}
+    .adb-header{background:#0d1526;color:#fff;padding:24px 28px 0;display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;}
+    .adb-header-left{flex:1;}
+    .adb-lbl{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(0,229,255,.7);margin-bottom:6px;}
+    .adb-title{font-size:26px;font-weight:900;letter-spacing:1px;font-family:var(--font-head);color:#fff;}
+    .adb-sub{font-size:13px;color:rgba(255,255,255,.45);margin-top:4px;padding-bottom:20px;}
+    .adb-close-btn{background:none;border:none;color:rgba(255,255,255,.5);font-size:18px;cursor:pointer;padding:4px 8px;border-radius:6px;flex-shrink:0;}
+    .adb-close-btn:hover{color:#fff;background:rgba(255,255,255,.1);}
+    .adb-stats-bar{background:#0d1526;display:flex;gap:8px;padding:0 24px 20px;flex-shrink:0;}
+    .adb-stat{flex:1;background:rgba(255,255,255,.07);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;}
+    .adb-stat-icon-wrap{width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+    .adb-stat-val{font-family:var(--font-head);font-size:22px;font-weight:900;color:#fff;line-height:1;}
+    .adb-stat-lbl{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.5px;margin-top:2px;}
+    .adb-body{overflow-y:auto;padding:20px;flex:1;background:#f5f6f8;}
+    .adb-body::-webkit-scrollbar{width:4px;} .adb-body::-webkit-scrollbar-thumb{background:#ccc;border-radius:2px;}
+    .adb-section-title{font-size:15px;font-weight:700;color:#111;margin-bottom:14px;}
+    .adb-item{background:#fff;border:1px solid #e8e8e8;border-radius:14px;margin-bottom:10px;overflow:hidden;}
+    .adb-item-order{font-size:11px;color:#bbb;padding:10px 16px 0;}
+    .adb-item-main{display:flex;align-items:flex-start;gap:14px;padding:10px 16px 12px;}
+    .adb-item-img{width:58px;height:58px;border-radius:10px;object-fit:cover;background:#eee;flex-shrink:0;}
+    .adb-item-info{flex:1;}
+    .adb-item-name{font-size:14px;font-weight:700;color:#111;margin-bottom:7px;}
+    .adb-item-badges{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap;}
+    .adb-badge-m{background:#e6f2ff;color:#1a6fcc;font-size:11px;font-weight:600;padding:3px 9px;border-radius:4px;}
+    .adb-badge-a{background:#f2f2f2;color:#666;font-size:11px;font-weight:600;padding:3px 9px;border-radius:4px;}
+    .adb-item-meta{font-size:12px;color:#999;line-height:1.7;}
+    .adb-item-actions{display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-top:2px;flex-shrink:0;}
+    .adb-item-actions button{background:none;border:none;font-size:13px;cursor:pointer;padding:0;font-family:var(--font-body);}
+    .adb-item-edit{color:#1a6fcc;} .adb-item-edit:hover{text-decoration:underline;}
+    .adb-item-cancel{color:#cc3333;} .adb-item-cancel:hover{text-decoration:underline;}
+    .adb-conds{padding:0 16px 14px;border-top:1px solid #f0f0f0;}
+    .adb-conds-lbl{font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:1.5px;padding:10px 0 8px;}
+    .adb-conds-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;}
+    .adb-cond{display:flex;align-items:center;gap:8px;font-size:13px;}
+    .adb-cond-icon{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+    .adb-cond-key{color:#999;flex:1;}
+    .adb-cond-val{font-weight:700;color:#111;}
+    .adb-empty{text-align:center;padding:52px 24px;}
+    .adb-empty-emoji{font-size:44px;margin-bottom:12px;}
+    .adb-empty-title{font-size:15px;font-weight:700;color:#888;margin-bottom:6px;}
+    .adb-empty-sub{font-size:13px;color:#bbb;}
     /* ── TOAST ── */
     .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface); border: 1px solid rgba(0,229,255,.3); border-radius: 40px; padding: 14px 28px; font-family: var(--font-head); font-size: 15px; font-weight: 700; letter-spacing: 1px; color: var(--cyan); display: flex; align-items: center; gap: 10px; z-index: 999; transition: transform .35s ease, opacity .35s; opacity: 0; }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
@@ -276,6 +323,10 @@
   <div class="nav-actions">
     <button><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
     <button><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+    <button class="adb-nav-btn" onclick="openDashboard()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L13.8 9.5L21 12L13.8 14.5L12 22L10.2 14.5L3 12L10.2 9.5Z"/></svg>
+      <span class="adb-nav-badge" id="adbNavBadge" style="display:none">0</span>
+    </button>
     <button><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></button>
   </div>
 </nav>
@@ -1042,6 +1093,21 @@ function buildReview() {
 }
 
 function activateAgent() {
+  const agent = {
+    id: Date.now(),
+    productId: currentProduct.id,
+    productName: currentProduct.name,
+    productImage: currentProduct.image,
+    productPrice: currentProduct.price,
+    priceTarget: document.getElementById('togPrice').checked ? parseFloat(document.getElementById('maxPrice').value)||null : null,
+    waitRestock: document.getElementById('togRestock').checked,
+    quantity: schedQtyCount,
+    expiry: document.getElementById('schedExpiry').value,
+    execMode: execMode,
+    status: 'monitoring',
+    created: new Date().toISOString()
+  };
+  saveNewAgent(agent);
   closeScheduleModal();
   showToast(`Smart Purchase agent activated for ${currentProduct.name}`);
 }
@@ -1061,6 +1127,61 @@ document.getElementById('notifyModal').addEventListener('click', e => { if(e.tar
 document.getElementById('scheduleModal').addEventListener('click', e => { if(e.target===e.currentTarget) closeScheduleModal(); });
 
 init();
+</script>
+
+<!-- AGENT DASHBOARD -->
+<div class="adb-overlay" id="agentDashboard" onclick="if(event.target===this)closeDashboard()">
+  <div class="adb-panel">
+    <div class="adb-header">
+      <div class="adb-header-left">
+        <div class="adb-lbl">Agent Dashboard</div>
+        <div class="adb-title">Conditional Purchases</div>
+        <div class="adb-sub" id="adbSub">Monitoring 0 Active Schedules</div>
+      </div>
+      <button class="adb-close-btn" onclick="closeDashboard()">✕</button>
+    </div>
+    <div class="adb-stats-bar">
+      <div class="adb-stat"><div class="adb-stat-icon-wrap">⇄</div><div><div class="adb-stat-val" id="adbStatActive">0</div><div class="adb-stat-lbl">Active</div></div></div>
+      <div class="adb-stat"><div class="adb-stat-icon-wrap">🚚</div><div><div class="adb-stat-val">0</div><div class="adb-stat-lbl">Shipped</div></div></div>
+      <div class="adb-stat"><div class="adb-stat-icon-wrap">✓</div><div><div class="adb-stat-val">0</div><div class="adb-stat-lbl">Completed</div></div></div>
+      <div class="adb-stat"><div class="adb-stat-icon-wrap">%</div><div><div class="adb-stat-val" id="adbStatSavings">0%</div><div class="adb-stat-lbl">Avg. Savings</div></div></div>
+    </div>
+    <div class="adb-body">
+      <div class="adb-section-title">Your Conditional Purchases</div>
+      <div id="adbList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const AGENTS_KEY='pl_agents';
+function _defaultAgents(){return[{id:1728000000000,productId:'PL-005',productName:'Stride S1',productImage:'images/stride_s1.jpeg',productPrice:129,priceTarget:116.10,waitRestock:true,quantity:1,expiry:new Date(Date.now()+30*86400000).toISOString().split('T')[0],execMode:'notify',status:'monitoring',created:new Date(Date.now()-2*86400000).toISOString()}];}
+function getAgents(){const r=localStorage.getItem(AGENTS_KEY);return r?JSON.parse(r):_defaultAgents();}
+function saveNewAgent(a){const arr=getAgents();arr.unshift(a);localStorage.setItem(AGENTS_KEY,JSON.stringify(arr));updateAgentBadge();}
+function cancelAgent(id){const arr=getAgents().filter(a=>a.id!==id);localStorage.setItem(AGENTS_KEY,JSON.stringify(arr));renderDashboard();updateAgentBadge();}
+function openDashboard(){renderDashboard();document.getElementById('agentDashboard').classList.add('open');}
+function closeDashboard(){document.getElementById('agentDashboard').classList.remove('open');}
+function updateAgentBadge(){const c=getAgents().filter(a=>a.status==='monitoring').length;const b=document.getElementById('adbNavBadge');if(b){b.textContent=c;b.style.display=c>0?'flex':'none';}}
+function renderDashboard(){
+  const agents=getAgents();
+  const active=agents.filter(a=>a.status==='monitoring').length;
+  document.getElementById('adbSub').textContent=`Monitoring ${active} Active Schedule${active!==1?'s':''}`;
+  document.getElementById('adbStatActive').textContent=active;
+  const sav=agents.filter(a=>a.priceTarget).map(a=>((a.productPrice-a.priceTarget)/a.productPrice*100));
+  document.getElementById('adbStatSavings').textContent=(sav.length?(sav.reduce((a,b)=>a+b,0)/sav.length).toFixed(0):0)+'%';
+  const list=document.getElementById('adbList');
+  if(!agents.length){list.innerHTML='<div class="adb-empty"><div class="adb-empty-emoji">🤖</div><div class="adb-empty-title">No active agents</div><div class="adb-empty-sub">Activate Smart Purchase on a product to get started</div></div>';return;}
+  list.innerHTML=agents.map(a=>{
+    const cr=new Date(a.created).toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'numeric'});
+    const ex=a.expiry?new Date(a.expiry+'T12:00:00').toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'numeric'}):'—';
+    let conds='';
+    if(a.priceTarget)conds+=`<div class="adb-cond"><div class="adb-cond-icon" style="background:#fff3e0">💰</div><span class="adb-cond-key">Price Target</span><span class="adb-cond-val">≤ €${a.priceTarget.toFixed(2)}</span></div>`;
+    if(a.waitRestock)conds+=`<div class="adb-cond"><div class="adb-cond-icon" style="background:#e0f7fa">🔄</div><span class="adb-cond-key">Inventory Status</span><span class="adb-cond-val">In Stock</span></div>`;
+    conds+=`<div class="adb-cond"><div class="adb-cond-icon" style="background:#f3e5f5"><span style="font-weight:800;color:#9B4DFF;font-size:11px">#</span></div><span class="adb-cond-key">Quantity</span><span class="adb-cond-val">${a.quantity}</span></div>`;
+    return`<div class="adb-item"><div class="adb-item-order">Order ID: —</div><div class="adb-item-main"><img class="adb-item-img" src="${a.productImage}" alt="${a.productName}"><div class="adb-item-info"><div class="adb-item-name">${a.productName}</div><div class="adb-item-badges"><span class="adb-badge-m">Monitoring</span><span class="adb-badge-a">${a.execMode==='auto'?'Auto Purchase':'Manual Approval'}</span></div><div class="adb-item-meta">Created: ${cr} · Valid Until: ${ex}<br>Current: €${a.productPrice}</div></div><div class="adb-item-actions"><button class="adb-item-edit">Edit</button><button class="adb-item-cancel" onclick="cancelAgent(${a.id})">Cancel</button></div></div><div class="adb-conds"><div class="adb-conds-lbl">Conditions</div><div class="adb-conds-grid">${conds}</div></div></div>`;
+  }).join('');
+}
+document.addEventListener('DOMContentLoaded',updateAgentBadge);
 </script>
 </body>
 </html>
