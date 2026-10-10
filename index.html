@@ -97,11 +97,12 @@
       filter: drop-shadow(0 24px 60px rgba(0,229,255,.22)) drop-shadow(0 0 120px rgba(155,77,255,.12));
     }
     @keyframes float { 0%,100%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-16px) rotate(1.5deg)} }
-    .hero-photo-wrap img { width: 100%; display: block; border-radius: 20px; filter: brightness(.75) saturate(.85); }
+    .hero-photo-wrap img { width: 100%; display: block; border-radius: 20px; filter: brightness(.8) saturate(1.1) sepia(.4) hue-rotate(170deg); }
     .hero-photo-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(0,229,255,.08) 0%, transparent 50%, rgba(155,77,255,.06) 100%);
+      background: linear-gradient(135deg, rgba(0,229,255,.15) 0%, transparent 50%, rgba(155,77,255,.1) 100%);
       mix-blend-mode: screen;
+      border-radius: 20px;
     }
     .hero-glow-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(ellipse, rgba(0,229,255,.07) 0%, rgba(155,77,255,.04) 50%, transparent 70%); animation: glow-pulse 3s ease-in-out infinite; pointer-events: none; z-index: -1; }
     @keyframes glow-pulse { 0%,100%{transform:translate(-50%,-50%) scale(1);opacity:1} 50%{transform:translate(-50%,-50%) scale(1.06);opacity:.6} }
@@ -413,17 +414,12 @@
   <div class="hero-visual">
     <div class="hero-glow-ring"></div>
     <div class="hero-photo-wrap">
-      <img src="images/Apex Pro.jpeg" alt="Apex Pro 2026">
+      <img src="images/hero_runner.jpg" alt="Runner">
       <div class="hero-photo-overlay"></div>
       <div class="hero-corner hero-corner-tl"></div>
       <div class="hero-corner hero-corner-tr"></div>
       <div class="hero-corner hero-corner-bl"></div>
       <div class="hero-corner hero-corner-br"></div>
-      <div class="hero-photo-badge">
-        <div class="hero-photo-badge-coll">2026 Collection</div>
-        <div class="hero-photo-badge-name">Apex Pro</div>
-        <div class="hero-photo-badge-price">€ 189</div>
-      </div>
     </div>
   </div>
   <div class="hero-stats">
