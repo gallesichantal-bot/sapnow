@@ -92,10 +92,10 @@
 
     .hero-visual { position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; }
     .hero-photo-wrap {
-      position: relative; width: 100%; max-width: 580px;
-      filter: drop-shadow(0 24px 60px rgba(0,100,255,.35)) drop-shadow(0 0 80px rgba(0,229,255,.2));
+      position: relative; width: 100%; max-width: 620px;
+      filter: drop-shadow(0 0 60px rgba(0,180,255,.18));
     }
-    .hero-photo-wrap img { width: 100%; display: block; border-radius: 20px; filter: grayscale(20%) brightness(.75) sepia(1) hue-rotate(195deg) saturate(2.2) contrast(1.05); }
+    .hero-photo-wrap img { width: 100%; display: block; border-radius: 0; filter: invert(1) hue-rotate(195deg) saturate(2) brightness(1.1); mix-blend-mode: screen; }
     .hero-photo-overlay {
       position: absolute; inset: 0;
       background: linear-gradient(135deg, rgba(0,229,255,.15) 0%, transparent 50%, rgba(155,77,255,.1) 100%);
@@ -412,12 +412,8 @@
   <div class="hero-visual">
     <div class="hero-glow-ring"></div>
     <div class="hero-photo-wrap">
-      <img src="images/hero_runner.jpg" alt="Runner">
+      <img src="images/runners.jpg" alt="Runners">
       <div class="hero-photo-overlay"></div>
-      <div class="hero-corner hero-corner-tl"></div>
-      <div class="hero-corner hero-corner-tr"></div>
-      <div class="hero-corner hero-corner-bl"></div>
-      <div class="hero-corner hero-corner-br"></div>
     </div>
   </div>
   <div class="hero-stats">
