@@ -1577,11 +1577,12 @@ function _plSpeak(text){
   const go=()=>{
     const voices=window.speechSynthesis.getVoices();
     const v=voices.find(v=>v.lang==='en-US')||voices.find(v=>v.lang.startsWith('en-'))||voices.find(v=>v.lang.startsWith('en'));
-    if(!v)return;
+    if(!v){if(_plMode==='voice'&&_plVoiceState!=='idle'){_plSetVoiceState('listening');_startSR(true);}return;}
     utt.voice=v;
     if(_plMode==='voice'){
       _plSetVoiceState('speaking');
-      utt.onend=()=>{if(_plMode==='voice'&&_plVoiceState==='speaking'){_plSetVoiceState('listening');_startSR(true);}};
+      const keepAlive=setInterval(()=>{if(!window.speechSynthesis.speaking){clearInterval(keepAlive);}else{window.speechSynthesis.pause();window.speechSynthesis.resume();}},10000);
+      utt.onend=()=>{clearInterval(keepAlive);if(_plMode==='voice'&&_plVoiceState==='speaking'){_plSetVoiceState('listening');_startSR(true);}};
     }
     window.speechSynthesis.speak(utt);
   };
@@ -1662,7 +1663,7 @@ function _startSR(liveMode){
     const tr=res[0].transcript.trim();
     document.getElementById('pl-v-interim').textContent='';
     if(!liveMode){document.getElementById('pl-input').value=tr;plSend();}
-    else{_plSetVoiceState('processing');_plHandleVoiceInput(tr);}
+    else{try{_plRec.abort();}catch(e){}  _plSetVoiceState('processing');_plHandleVoiceInput(tr);}
   };
   _plRec.onerror=(e)=>{
     _plListening=false;document.getElementById('pl-v-interim').textContent='';
@@ -1951,8 +1952,8 @@ function _buildResponse(text,attachments){
     return{text:`Here's the comparison between <strong>${prods.map(p=>p.name).join('</strong> and <strong>')}</strong>:`,speak:`Comparing ${prods.map(p=>p.name).join(' and ')}.`,component:_renderComparison(prods),followUps:prods.map(p=>`Add ${p.name} to cart`)};
   }
 
-  // 6. Product detail
-  if(/\b(tell|detail|describe|info|show|spec|about|more)\b/.test(t)){
+  // 6. Product detail (requires a product name in the text to avoid catching generic "show me X" queries)
+  if(/\b(tell|detail|describe|info|show|spec|about|more)\b/.test(t)&&_findProduct(t)){
     const p=_findProduct(t)||(_ctx.activeId&&PL_P[_ctx.activeId]);
     if(!p)return{text:'Which model would you like more info on?',speak:'Which model would you like more info on?',products:PL_LIST.slice(0,4),followUps:['Apex Pro','Ridge X','Velocity V3','Canyon XT']};
     _ctx.activeId=p.id;
