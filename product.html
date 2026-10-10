@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PEAKLINE — Product</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #080810;
+      --surface:  #0e0e1a;
+      --surface2: #141424;
+      --border:   rgba(255,255,255,.07);
+      --cyan:     #00E5FF;
+      --purple:   #9B4DFF;
+      --orange:   #FF6B00;
+      --pink:     #FF2D8A;
+      --gray1:    rgba(255,255,255,.85);
+      --gray2:    rgba(255,255,255,.45);
+      --gray3:    rgba(255,255,255,.18);
+      --font-head:'Barlow Condensed', sans-serif;
+      --font-body:'Barlow', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--gray1); font-family: var(--font-body); min-height: 100vh; }
+
+    /* ── NAV ── */
+    .nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 48px; height: 68px; background: rgba(8,8,16,.92); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--font-head); font-size: 18px; font-weight: 900; letter-spacing: 3px; color: #fff; }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { text-decoration: none; font-size: 13px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray2); transition: color .2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-actions { display: flex; gap: 8px; }
+    .nav-actions button { background: none; border: none; cursor: pointer; color: var(--gray2); padding: 8px; border-radius: 8px; transition: color .2s, background .2s; }
+    .nav-actions button:hover { color: #fff; background: var(--surface2); }
+
+    /* ── BREADCRUMB ── */
+    .breadcrumb { padding: 24px 80px 0; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--gray2); }
+    .breadcrumb a { color: var(--cyan); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { color: var(--gray3); }
+
+    /* ── PRODUCT LAYOUT ── */
+    .product-page { max-width: 1200px; margin: 0 auto; padding: 32px 48px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+
+    /* ── LEFT: GALLERY ── */
+    .gallery { position: sticky; top: 88px; }
+    .gallery-main { position: relative; background: var(--surface); border-radius: 20px; overflow: hidden; aspect-ratio: 1; border: 1px solid var(--border); }
+    .gallery-main img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+    .gallery-main:hover img { transform: scale(1.04); }
+    .gallery-main-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(0,229,255,.05) 0%, transparent 60%, rgba(155,77,255,.04) 100%); pointer-events: none; }
+    .gallery-expand { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 13px; color: var(--cyan); cursor: pointer; background: none; border: none; padding: 0; font-family: var(--font-body); }
+    .gallery-expand:hover { opacity: .75; }
+    .gallery-expand svg { width: 14px; height: 14px; }
+    .gallery-thumbs { display: flex; gap: 10px; margin-top: 14px; }
+    .gallery-thumb { width: 72px; height: 72px; border-radius: 10px; overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: border-color .2s; background: var(--surface); flex-shrink: 0; }
+    .gallery-thumb.active { border-color: var(--cyan); }
+    .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ── RIGHT: INFO ── */
+    .product-info { display: flex; flex-direction: column; gap: 0; }
+    .product-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .product-reviews { font-size: 13px; color: var(--gray2); }
+    .product-id { font-size: 12px; font-family: var(--font-head); letter-spacing: 2px; color: var(--cyan); }
+    .product-brand { font-size: 12px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--gray2); margin-bottom: 8px; }
+    .product-title { font-family: var(--font-head); font-size: 52px; font-weight: 900; letter-spacing: 2px; line-height: 1; text-transform: uppercase; margin-bottom: 20px; background: linear-gradient(135deg, #fff 60%, var(--gray2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .product-price-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; }
+    .product-price { font-family: var(--font-head); font-size: 40px; font-weight: 900; color: var(--cyan); }
+    .product-price-old { font-size: 22px; color: var(--gray2); text-decoration: line-through; }
+    .product-desc { font-size: 15px; line-height: 1.7; color: var(--gray2); margin-bottom: 28px; }
+
+    /* ── DIVIDER ── */
+    .divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+    /* ── SIZE SELECTOR ── */
+    .selector-label { font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--gray2); margin-bottom: 12px; display: flex; justify-content: space-between; }
+    .selector-label span { color: var(--cyan); cursor: pointer; }
+    .size-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .size-btn { width: 52px; height: 44px; border: 1px solid var(--border); background: var(--surface); border-radius: 8px; font-family: var(--font-head); font-size: 15px; font-weight: 700; color: var(--gray1); cursor: pointer; transition: all .2s; }
+    .size-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+    .size-btn.active { border-color: var(--cyan); background: rgba(0,229,255,.1); color: var(--cyan); }
+    .size-btn.unavailable { opacity: .3; cursor: not-allowed; text-decoration: line-through; }
+
+    /* ── COLOR SELECTOR ── */
+    .color-row { display: flex; gap: 10px; margin-bottom: 28px; }
+    .color-dot { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all .2s; outline: 2px solid transparent; outline-offset: 3px; }
+    .color-dot.active { outline-color: var(--cyan); }
+
+    /* ── QUANTITY ── */
+    .qty-row { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+    .qty-label { font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--gray2); }
+    .qty-ctrl { display: flex; align-items: center; gap: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .qty-btn { width: 40px; height: 40px; background: none; border: none; color: var(--gray1); font-size: 18px; cursor: pointer; transition: background .2s; }
+    .qty-btn:hover { background: var(--surface2); }
+    .qty-val { width: 44px; text-align: center; font-family: var(--font-head); font-size: 18px; font-weight: 700; color: #fff; }
+
+    /* ── CTA BUTTONS ── */
+    .btn-cart { width: 100%; padding: 18px 24px; border: none; border-radius: 14px; background: linear-gradient(135deg, var(--cyan), var(--purple)); font-family: var(--font-head); font-size: 16px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: #fff; cursor: pointer; transition: opacity .2s, transform .15s; margin-bottom: 12px; }
+    .btn-cart:hover { opacity: .9; transform: translateY(-2px); }
+    .btn-cart:active { transform: translateY(0); }
+    .btn-wishlist { width: 100%; padding: 14px 24px; border: 1px solid var(--border); border-radius: 14px; background: transparent; font-family: var(--font-head); font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gray2); cursor: pointer; transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-wishlist:hover { border-color: var(--pink); color: var(--pink); }
+
+    /* ── OUT OF STOCK ── */
+    .oos-notice { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; margin-bottom: 20px; }
+    .oos-notice p { font-size: 14px; line-height: 1.6; color: var(--gray2); }
+    .oos-notice strong { color: var(--gray1); }
+    .oos-badge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-head); font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); background: rgba(255,107,0,.1); border: 1px solid rgba(255,107,0,.2); border-radius: 20px; padding: 4px 12px; margin-bottom: 16px; }
+    .btn-notify { width: 100%; padding: 18px 24px; border: none; border-radius: 14px; background: var(--cyan); font-family: var(--font-head); font-size: 16px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: #000; cursor: pointer; transition: opacity .2s, transform .15s; margin-bottom: 12px; }
+    .btn-notify:hover { opacity: .9; transform: translateY(-2px); }
+    .btn-schedule { width: 100%; padding: 16px 24px; border: 1px solid var(--cyan); border-radius: 14px; background: transparent; font-family: var(--font-head); font-size: 15px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--cyan); cursor: pointer; transition: all .2s; }
+    .btn-schedule:hover { background: rgba(0,229,255,.08); }
+    .qty-oos { font-family: var(--font-head); font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-top: 16px; }
+
+    /* ── DETAILS ACCORDION ── */
+    .details-section { margin-top: 32px; }
+    .detail-row { border-top: 1px solid var(--border); }
+    .detail-row:last-child { border-bottom: 1px solid var(--border); }
+    .detail-toggle { width: 100%; background: none; border: none; padding: 16px 0; display: flex; align-items: center; justify-content: space-between; cursor: pointer; font-family: var(--font-head); font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gray1); }
+    .detail-toggle svg { transition: transform .25s; }
+    .detail-row.open .detail-toggle svg { transform: rotate(180deg); }
+    .detail-body { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+    .detail-row.open .detail-body { max-height: 300px; }
+    .detail-body-inner { padding: 0 0 18px; }
+    .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .spec-item { background: var(--surface); border-radius: 8px; padding: 10px 14px; }
+    .spec-key { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray2); margin-bottom: 3px; }
+    .spec-val { font-size: 14px; font-weight: 600; color: var(--gray1); }
+
+    /* ── LIGHTBOX ── */
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.9); z-index: 999; align-items: center; justify-content: center; }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 12px; }
+    .lightbox-close { position: absolute; top: 24px; right: 24px; background: var(--surface); border: none; color: #fff; width: 44px; height: 44px; border-radius: 50%; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+    /* ── NOTIFY MODAL ── */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 40px; max-width: 420px; width: 90%; text-align: center; }
+    .modal-icon { width: 56px; height: 56px; border-radius: 50%; background: rgba(0,229,255,.12); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+    .modal-title { font-family: var(--font-head); font-size: 26px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+    .modal-desc { font-size: 14px; color: var(--gray2); line-height: 1.6; margin-bottom: 24px; }
+    .modal-input { width: 100%; padding: 14px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--gray1); font-family: var(--font-body); font-size: 15px; margin-bottom: 16px; outline: none; }
+    .modal-input:focus { border-color: var(--cyan); }
+    .modal-btn { width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--cyan); font-family: var(--font-head); font-size: 15px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #000; cursor: pointer; }
+    .modal-cancel { margin-top: 12px; font-size: 13px; color: var(--gray2); cursor: pointer; background: none; border: none; font-family: var(--font-body); }
+    .modal-cancel:hover { color: var(--gray1); }
+
+    /* ── SCHEDULE MODAL ── */
+    .schedule-option { display: flex; align-items: center; gap: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 10px; cursor: pointer; text-align: left; width: 100%; transition: border-color .2s; }
+    .schedule-option:hover { border-color: var(--cyan); }
+    .schedule-option-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(0,229,255,.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .schedule-option-title { font-size: 14px; font-weight: 600; color: var(--gray1); margin-bottom: 2px; }
+    .schedule-option-desc { font-size: 12px; color: var(--gray2); }
+
+    /* ── TOAST ── */
+    .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface); border: 1px solid rgba(0,229,255,.3); border-radius: 40px; padding: 14px 28px; font-family: var(--font-head); font-size: 15px; font-weight: 700; letter-spacing: 1px; color: var(--cyan); display: flex; align-items: center; gap: 10px; z-index: 999; transition: transform .35s ease, opacity .35s; opacity: 0; }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    @media (max-width: 900px) {
+      .product-page { grid-template-columns: 1fr; gap: 32px; padding: 24px; }
+      .gallery { position: static; }
+      .breadcrumb { padding: 16px 24px 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="nav-logo">
+    <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#00E5FF"/><stop offset="100%" stop-color="#9B4DFF"/></linearGradient></defs>
+      <polygon points="18,3 34,33 2,33" fill="none" stroke="url(#lg)" stroke-width="2.5"/>
+      <polygon points="18,9 28,33 8,33" fill="rgba(155,77,255,.12)"/>
+      <circle cx="18" cy="3" r="2.5" fill="#00E5FF"/>
+    </svg>
+    PEAKLINE
+  </a>
+  <ul class="nav-links">
+    <li><a href="#">Running</a></li>
+    <li><a href="#">Training</a></li>
+    <li><a href="#">Outdoor</a></li>
+    <li><a href="#">Collections</a></li>
+    <li><a href="#" style="color:var(--orange)">Sale</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
+    <button><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+    <button><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></button>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<nav class="breadcrumb" id="breadcrumb">
+  <a href="index.html">Home</a>
+  <span>/</span>
+  <a href="index.html#products">All Products</a>
+  <span>/</span>
+  <span id="bc-category">—</span>
+  <span>/</span>
+  <span id="bc-name">—</span>
+</nav>
+
+<!-- PRODUCT PAGE -->
+<div class="product-page">
+
+  <!-- GALLERY -->
+  <div class="gallery">
+    <div class="gallery-main" id="galleryMain">
+      <img id="mainImg" src="" alt="">
+      <div class="gallery-main-overlay"></div>
+    </div>
+    <button class="gallery-expand" onclick="openLightbox()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+      Expand Image
+    </button>
+    <div class="gallery-thumbs" id="galleryThumbs"></div>
+  </div>
+
+  <!-- INFO -->
+  <div class="product-info">
+    <div class="product-meta">
+      <div class="product-reviews">★★★★★ <span style="color:var(--gray2)">No reviews yet</span></div>
+      <div class="product-id" id="productId">ID PL-000</div>
+    </div>
+    <div class="product-brand" id="productBrand">PEAKLINE</div>
+    <div class="product-title" id="productTitle">Product</div>
+    <div class="product-price-row">
+      <div class="product-price" id="productPrice">€0</div>
+      <div class="product-price-old" id="productPriceOld" style="display:none"></div>
+    </div>
+    <p class="product-desc" id="productDesc"></p>
+
+    <div class="divider"></div>
+
+    <!-- IN STOCK UI -->
+    <div id="inStockUI">
+      <div class="selector-label">Size (EU) <span>Size Guide →</span></div>
+      <div class="size-grid" id="sizeGrid"></div>
+
+      <div class="selector-label">Color</div>
+      <div class="color-row" id="colorRow"></div>
+
+      <div class="qty-row">
+        <div class="qty-label">Qty</div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty(-1)">−</button>
+          <div class="qty-val" id="qtyVal">1</div>
+          <button class="qty-btn" onclick="changeQty(1)">+</button>
+        </div>
+      </div>
+
+      <button class="btn-cart" onclick="addToCart()">Add to Cart →</button>
+      <button class="btn-wishlist">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        Save to Wishlist
+      </button>
+    </div>
+
+    <!-- OUT OF STOCK UI -->
+    <div id="outOfStockUI" style="display:none">
+      <div class="oos-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Out of Stock
+      </div>
+      <div class="oos-notice">
+        <p>Get notified when this product is available.<br>To be notified you need to activate the <strong>Notification Channels</strong>.</p>
+      </div>
+      <button class="btn-notify" onclick="openNotifyModal()">Notify Me</button>
+      <button class="btn-schedule" onclick="openScheduleModal()">Schedule Smart Purchase</button>
+      <div class="qty-oos">Quantity: Out of stock</div>
+    </div>
+
+    <!-- PRODUCT DETAILS ACCORDION -->
+    <div class="details-section">
+      <div class="detail-row">
+        <button class="detail-toggle" onclick="toggleDetail(this)">
+          Product Details
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="detail-body">
+          <div class="detail-body-inner">
+            <div class="spec-grid" id="specGrid"></div>
+          </div>
+        </div>
+      </div>
+      <div class="detail-row">
+        <button class="detail-toggle" onclick="toggleDetail(this)">
+          Shipping & Returns
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="detail-body">
+          <div class="detail-body-inner" style="color:var(--gray2);font-size:14px;line-height:1.7">
+            Free standard shipping on orders over €75. Express delivery available at checkout. Returns accepted within 30 days of purchase — unused, in original packaging.
+          </div>
+        </div>
+      </div>
+      <div class="detail-row">
+        <button class="detail-toggle" onclick="toggleDetail(this)">
+          Technology
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="detail-body">
+          <div class="detail-body-inner" id="techBody" style="color:var(--gray2);font-size:14px;line-height:1.7"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightboxImg" src="" alt="">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+</div>
+
+<!-- NOTIFY MODAL -->
+<div class="modal-overlay" id="notifyModal">
+  <div class="modal-box">
+    <div class="modal-icon">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </div>
+    <div class="modal-title">Get Notified</div>
+    <p class="modal-desc">Enter your email to be alerted as soon as <strong id="notifyProductName"></strong> is back in stock.</p>
+    <input class="modal-input" type="email" placeholder="your@email.com" id="notifyEmail">
+    <button class="modal-btn" onclick="submitNotify()">Activate Notification</button>
+    <button class="modal-cancel" onclick="closeNotifyModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- SCHEDULE MODAL -->
+<div class="modal-overlay" id="scheduleModal">
+  <div class="modal-box">
+    <div class="modal-icon">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </div>
+    <div class="modal-title">Smart Purchase</div>
+    <p class="modal-desc">Choose when to automatically purchase when stock is restored.</p>
+    <button class="schedule-option" onclick="selectSchedule('instant')">
+      <div class="schedule-option-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+      <div>
+        <div class="schedule-option-title">Instant Purchase</div>
+        <div class="schedule-option-desc">Buy immediately when back in stock</div>
+      </div>
+    </button>
+    <button class="schedule-option" onclick="selectSchedule('weekly')">
+      <div class="schedule-option-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      <div>
+        <div class="schedule-option-title">Weekly Check</div>
+        <div class="schedule-option-desc">Notified every Monday if available</div>
+      </div>
+    </button>
+    <button class="schedule-option" onclick="selectSchedule('price')">
+      <div class="schedule-option-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+      <div>
+        <div class="schedule-option-title">Price Drop Alert</div>
+        <div class="schedule-option-desc">Purchase only when price drops ≥10%</div>
+      </div>
+    </button>
+    <button class="modal-cancel" onclick="closeScheduleModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg">Done</span>
+</div>
+
+<script>
+const PRODUCTS = {
+  'apex-pro': {
+    id: 'PL-001', name: 'Apex Pro', brand: 'Peakline Running',
+    price: 189, priceOld: null,
+    category: 'Running',
+    image: 'images/Apex Pro.jpeg',
+    desc: 'ZoomX foam with heel air unit and reactive Flyknit upper. Engineered for long-distance runners who refuse to slow down.',
+    inStock: true,
+    badge: 'New',
+    colors: ['#00E5FF','#FF6B00','#ffffff'],
+    sizes: [38,39,40,41,42,43,44,45,46,47],
+    unavailableSizes: [38,47],
+    specs: { Weight: '235g', Drop: '10mm', Upper: 'Flyknit', Midsole: 'ZoomX foam', Stack: '38mm', Terrain: 'Road' },
+    tech: 'ZoomX foam delivers unmatched energy return. Reaction Flyknit upper adapts to your foot shape in real time, reducing friction and hot spots across any distance.'
+  },
+  'ridge-x': {
+    id: 'PL-002', name: 'Ridge X', brand: 'Peakline Trail',
+    price: 159, priceOld: 199,
+    category: 'Trail',
+    image: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=800&q=80',
+    desc: 'Meta-rocker maxi-cushion with aggressive Vibram Megagrip sole. Designed for technical trails and off-road adventures.',
+    inStock: true,
+    badge: 'Sale',
+    colors: ['#FF6B00','#222222','#3D5A3E'],
+    sizes: [39,40,41,42,43,44,45,46],
+    unavailableSizes: [],
+    specs: { Weight: '298g', Drop: '6mm', Upper: 'Mesh TPU', Midsole: 'MaxRun foam', Lug: '5mm', Terrain: 'Trail' },
+    tech: 'Vibram Megagrip compound provides 25% more traction than standard outsoles on wet and dry surfaces. The meta-rocker geometry promotes a smooth heel-to-toe transition even on uneven terrain.'
+  },
+  'velocity-v3': {
+    id: 'PL-003', name: 'Velocity V3', brand: 'Peakline Speed',
+    price: 229, priceOld: null,
+    category: 'Racing',
+    image: 'images/Velocity V3.jpeg',
+    desc: 'Full-length carbon plate with ultra-light 78g AtomKnit upper. Built for race day PRs and peak performance.',
+    inStock: true,
+    badge: 'New',
+    colors: ['#ddeeff','#00E5FF','#cc2244'],
+    sizes: [39,40,41,42,43,44,45,46],
+    unavailableSizes: [39,46],
+    specs: { Weight: '195g', Drop: '4mm', Upper: 'AtomKnit', Midsole: 'PeakCarbon X', Plate: 'Full carbon', Terrain: 'Road' },
+    tech: 'The PeakCarbon X plate stores and releases energy with every footstrike, giving you up to 8% more propulsion than conventional foam alone. AtomKnit upper weighs just 78g.'
+  },
+  'summit-lite': {
+    id: 'PL-004', name: 'Summit Lite', brand: 'Peakline Alpine',
+    price: 249, priceOld: null,
+    category: 'Outdoor',
+    image: 'images/summit_lite.jpeg',
+    desc: 'OrthoShield waterproof membrane with Vibram Megagrip mid-cut sole. For mountain trails and demanding outdoor conditions.',
+    inStock: true,
+    badge: 'Limited',
+    colors: ['#4a6040','#6e5c42','#1a1a2e'],
+    sizes: [39,40,41,42,43,44,45,46,47],
+    unavailableSizes: [39,40],
+    specs: { Weight: '420g', Drop: '8mm', Upper: 'OrthoShield', Midsole: 'Alpine EVA', Cut: 'Mid-cut', Terrain: 'Mountain' },
+    tech: 'OrthoShield membrane blocks water and wind while maintaining breathability at 10,000g/m²/24h. Vibram Megagrip outsole rated for -20°C alpine conditions.'
+  },
+  'stride-s1': {
+    id: 'PL-005', name: 'Stride S1', brand: 'Peakline Running',
+    price: 129, priceOld: null,
+    category: 'Running',
+    image: 'images/stride_s1.jpeg',
+    desc: 'Reactive EVA midsole with breathable mesh upper, 8mm drop and wide toe box. The perfect everyday trainer for all paces.',
+    inStock: false,
+    badge: 'New',
+    colors: ['#00E5FF','#ffffff','#1a1a2e'],
+    sizes: [38,39,40,41,42,43,44,45,46,47],
+    unavailableSizes: [],
+    specs: { Weight: '260g', Drop: '8mm', Upper: 'Mesh', Midsole: 'EVA reactive', Toe: 'Wide box', Terrain: 'Road' },
+    tech: 'Dual-density EVA midsole provides cushioning under heel with firmer response under the forefoot. The wide toe box allows natural foot splay for maximum comfort on long runs.'
+  },
+  'flash-2': {
+    id: 'PL-006', name: 'Flash 2.0', brand: 'Peakline Speed',
+    price: 175, priceOld: null,
+    category: 'Racing',
+    image: 'images/flash_2.0.jpeg',
+    desc: 'Ultra-light road racer with 4mm drop, minimalist stack and responsive grip. Built for runners who want to fly.',
+    inStock: true,
+    badge: 'Hot',
+    colors: ['#FF2D8A','#00E5FF','#1a1a2e'],
+    sizes: [38,39,40,41,42,43,44,45,46],
+    unavailableSizes: [38],
+    specs: { Weight: '178g', Drop: '4mm', Upper: 'SpeedKnit', Midsole: 'PEBA foam', Stack: '22mm', Terrain: 'Road' },
+    tech: 'PEBA foam offers the highest energy return of any midsole material, at 95% rebound efficiency. SpeedKnit upper is knitted in a single piece, eliminating seams and reducing weight to 52g.'
+  },
+  'canyon-xt': {
+    id: 'PL-007', name: 'Canyon XT', brand: 'Peakline Trail',
+    price: 199, priceOld: null,
+    category: 'Trail',
+    image: 'images/kanyion_xt.jpeg',
+    desc: 'Gore-Tex waterproof membrane with 5mm lugs, TPU rock protection and dynamic support system.',
+    inStock: true,
+    badge: 'New',
+    colors: ['#FF6B00','#3D5A3E','#222222'],
+    sizes: [39,40,41,42,43,44,45,46,47],
+    unavailableSizes: [47],
+    specs: { Weight: '340g', Drop: '8mm', Upper: 'Gore-Tex', Midsole: 'TrailFlex', Lug: '5mm', Terrain: 'Trail/Mud' },
+    tech: 'Gore-Tex Extended Comfort membrane keeps your feet dry without sacrificing breathability. The TrailFlex midsole flexes with the terrain while the TPU shank provides torsional stability on rocky surfaces.'
+  },
+  'power-cross': {
+    id: 'PL-008', name: 'Power Cross', brand: 'Peakline Training',
+    price: 99, priceOld: 129,
+    category: 'Training',
+    image: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=800&q=80',
+    desc: 'Reinforced lateral stability with flat training sole and durable upper. Built for cross-training, HIIT and gym sessions.',
+    inStock: true,
+    badge: 'Sale',
+    colors: ['#9B4DFF','#222222','#ffffff'],
+    sizes: [38,39,40,41,42,43,44,45,46,47],
+    unavailableSizes: [],
+    specs: { Weight: '310g', Drop: '4mm', Upper: 'Durable mesh', Midsole: 'Flat EVA', Sole: 'Gum rubber', Terrain: 'Indoor/Gym' },
+    tech: 'The reinforced lateral cage prevents ankle roll during lateral movements. Flat gum rubber sole provides 360° pivot points and maximum floor contact for stability under heavy loads.'
+  }
+};
+
+let currentProduct = null;
+let currentQty = 1;
+let selectedSize = null;
+
+function getProductId() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('id') || 'apex-pro';
+}
+
+function init() {
+  const id = getProductId();
+  currentProduct = PRODUCTS[id] || PRODUCTS['apex-pro'];
+  render(currentProduct);
+}
+
+function render(p) {
+  document.title = `PEAKLINE — ${p.name}`;
+
+  // breadcrumb
+  document.getElementById('bc-category').textContent = p.category;
+  document.getElementById('bc-name').textContent = p.name;
+
+  // main info
+  document.getElementById('productId').textContent = `ID ${p.id}`;
+  document.getElementById('productBrand').textContent = p.brand.toUpperCase();
+  document.getElementById('productTitle').textContent = p.name;
+  document.getElementById('productPrice').textContent = `€${p.price}`;
+  if (p.priceOld) {
+    document.getElementById('productPriceOld').textContent = `€${p.priceOld}`;
+    document.getElementById('productPriceOld').style.display = '';
+  }
+  document.getElementById('productDesc').textContent = p.desc;
+  document.getElementById('notifyProductName').textContent = p.name;
+
+  // gallery
+  const mainImg = document.getElementById('mainImg');
+  mainImg.src = p.image;
+  mainImg.alt = p.name;
+
+  // thumbs (repeat same image with slight style variation for demo)
+  const thumbsEl = document.getElementById('galleryThumbs');
+  thumbsEl.innerHTML = '';
+  const angles = [p.image, p.image, p.image];
+  angles.forEach((src, i) => {
+    const d = document.createElement('div');
+    d.className = 'gallery-thumb' + (i === 0 ? ' active' : '');
+    d.innerHTML = `<img src="${src}" alt="${p.name} view ${i+1}" style="filter:${i===1?'hue-rotate(20deg)':i===2?'brightness(1.2)':'none'}">`;
+    d.onclick = () => {
+      document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+      d.classList.add('active');
+    };
+    thumbsEl.appendChild(d);
+  });
+
+  // stock UI
+  if (p.inStock) {
+    document.getElementById('inStockUI').style.display = '';
+    document.getElementById('outOfStockUI').style.display = 'none';
+    renderSizes(p);
+    renderColors(p);
+  } else {
+    document.getElementById('inStockUI').style.display = 'none';
+    document.getElementById('outOfStockUI').style.display = '';
+  }
+
+  // specs
+  const specGrid = document.getElementById('specGrid');
+  specGrid.innerHTML = Object.entries(p.specs).map(([k,v]) =>
+    `<div class="spec-item"><div class="spec-key">${k}</div><div class="spec-val">${v}</div></div>`
+  ).join('');
+
+  // tech
+  document.getElementById('techBody').textContent = p.tech;
+}
+
+function renderSizes(p) {
+  const grid = document.getElementById('sizeGrid');
+  grid.innerHTML = p.sizes.map(s => {
+    const unavail = p.unavailableSizes.includes(s);
+    return `<button class="size-btn${unavail?' unavailable':''}" onclick="${unavail?'':'"selectSize(this)"'}">${s}</button>`;
+  }).join('');
+  // fix onclick
+  grid.querySelectorAll('.size-btn:not(.unavailable)').forEach(btn => {
+    btn.onclick = () => selectSize(btn);
+  });
+}
+
+function selectSize(btn) {
+  document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedSize = btn.textContent;
+}
+
+function renderColors(p) {
+  const row = document.getElementById('colorRow');
+  row.innerHTML = p.colors.map((c,i) =>
+    `<div class="color-dot${i===0?' active':''}" style="background:${c};${c==='#ffffff'||c==='#ddeeff'?'border:2px solid rgba(255,255,255,.2)':''}" onclick="selectColor(this)"></div>`
+  ).join('');
+}
+
+function selectColor(dot) {
+  document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+  dot.classList.add('active');
+}
+
+function changeQty(delta) {
+  currentQty = Math.max(1, Math.min(10, currentQty + delta));
+  document.getElementById('qtyVal').textContent = currentQty;
+}
+
+function addToCart() {
+  if (!selectedSize) { showToast('Please select a size'); return; }
+  showToast(`${currentProduct.name} (EU ${selectedSize}) added to cart`);
+}
+
+function toggleDetail(btn) {
+  const row = btn.closest('.detail-row');
+  row.classList.toggle('open');
+}
+
+// lightbox
+function openLightbox() {
+  document.getElementById('lightboxImg').src = currentProduct.image;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+// notify modal
+function openNotifyModal() {
+  document.getElementById('notifyModal').classList.add('open');
+}
+function closeNotifyModal() {
+  document.getElementById('notifyModal').classList.remove('open');
+}
+function submitNotify() {
+  const email = document.getElementById('notifyEmail').value.trim();
+  if (!email || !email.includes('@')) { showToast('Enter a valid email'); return; }
+  closeNotifyModal();
+  showToast(`Notification activated for ${currentProduct.name}`);
+}
+
+// schedule modal
+function openScheduleModal() {
+  document.getElementById('scheduleModal').classList.add('open');
+}
+function closeScheduleModal() {
+  document.getElementById('scheduleModal').classList.remove('open');
+}
+function selectSchedule(type) {
+  closeScheduleModal();
+  const labels = { instant: 'Instant purchase set', weekly: 'Weekly alert activated', price: 'Price drop alert set' };
+  showToast(labels[type] || 'Smart purchase scheduled');
+}
+
+// toast
+let toastTimer;
+function showToast(msg) {
+  clearTimeout(toastTimer);
+  document.getElementById('toastMsg').textContent = msg;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// close modals on overlay click
+document.getElementById('notifyModal').addEventListener('click', e => { if(e.target===e.currentTarget) closeNotifyModal(); });
+document.getElementById('scheduleModal').addEventListener('click', e => { if(e.target===e.currentTarget) closeScheduleModal(); });
+
+init();
+</script>
+</body>
+</html>
