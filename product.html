@@ -643,6 +643,7 @@
 </div>
 
 <script>
+const USER_EMAIL = 'chantal.gallesich@peakline.com';
 const PRODUCTS = {
   'apex-pro': {
     id: 'PL-001', name: 'Apex Pro', brand: 'Peakline Running',
@@ -889,6 +890,7 @@ function closeLightbox() {
 
 // notify modal
 function openNotifyModal() {
+  document.getElementById('notifyEmail').value = USER_EMAIL;
   document.getElementById('notifyModal').classList.add('open');
 }
 function closeNotifyModal() {
@@ -919,6 +921,8 @@ function openScheduleModal() {
     document.getElementById('maxPrice').value = def;
     updateSavings();
   }
+  // pre-fill email
+  document.getElementById('schedEmail').value = USER_EMAIL;
   syncPriceToggle();
   renderSchedStep(1);
   document.getElementById('scheduleModal').classList.add('open');
