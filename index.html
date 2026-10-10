@@ -93,11 +93,9 @@
     .hero-visual { position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; }
     .hero-photo-wrap {
       position: relative; width: 100%; max-width: 580px;
-      animation: float 4.5s ease-in-out infinite;
-      filter: drop-shadow(0 24px 60px rgba(0,229,255,.22)) drop-shadow(0 0 120px rgba(155,77,255,.12));
+      filter: drop-shadow(0 24px 60px rgba(0,100,255,.35)) drop-shadow(0 0 80px rgba(0,229,255,.2));
     }
-    @keyframes float { 0%,100%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-16px) rotate(1.5deg)} }
-    .hero-photo-wrap img { width: 100%; display: block; border-radius: 20px; filter: brightness(.8) saturate(1.1) sepia(.4) hue-rotate(170deg); }
+    .hero-photo-wrap img { width: 100%; display: block; border-radius: 20px; filter: grayscale(20%) brightness(.75) sepia(1) hue-rotate(195deg) saturate(2.2) contrast(1.05); }
     .hero-photo-overlay {
       position: absolute; inset: 0;
       background: linear-gradient(135deg, rgba(0,229,255,.15) 0%, transparent 50%, rgba(155,77,255,.1) 100%);
