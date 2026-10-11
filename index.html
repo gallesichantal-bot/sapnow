@@ -1669,6 +1669,7 @@ function _plStartVoice(){
     document.getElementById('pl-timer').textContent=m+':'+s;
   },1000);
   _plSetVoiceState('connecting');
+  document.getElementById('pl-v-last').textContent='Speak to start. Ask for advice on running, trail, racing or outdoor shoes.';
   setTimeout(()=>{_plSetVoiceState('listening');_startSR(true);},400);
 }
 function _plStopVoice(){
@@ -1721,7 +1722,10 @@ function _startSR(liveMode){
     const tr=res[0].transcript.trim();
     document.getElementById('pl-v-interim').textContent='';
     if(!liveMode){document.getElementById('pl-input').value=tr;plSend();}
-    else{try{_plRec.abort();}catch(e){}  _plSetVoiceState('processing');_plHandleVoiceInput(tr);}
+    else{
+      if(!tr||tr.length<3){_plSetVoiceState('listening');_startSR(true);return;}
+      try{_plRec.abort();}catch(e){}  _plSetVoiceState('processing');_plHandleVoiceInput(tr);
+    }
   };
   _plRec.onerror=(e)=>{
     _plListening=false;document.getElementById('pl-v-interim').textContent='';
