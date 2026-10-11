@@ -2030,7 +2030,7 @@ function _buildResponse(text,attachments){
     const prods=(found.length>=2)?found.slice(0,3):(_ctx.recentIds.slice(0,2).map(id=>PL_P[id]).filter(Boolean));
     if(prods.length<2)return{text:'Tell me which models you want to compare!',speak:'Tell me which models you want to compare.',followUps:['Compare Apex Pro and Stride S1','Compare Ridge X and Canyon XT','Compare Velocity V3 and Flash 2.0']};
     _ctx.recentIds=prods.map(p=>p.id);
-    return{text:`Here's the comparison between <strong>${prods.map(p=>p.name).join('</strong> and <strong>')}</strong>:`,speak:`Comparing ${prods.map(p=>p.name).join(' and ')}.`,component:_renderComparison(prods),followUps:prods.map(p=>`Add ${p.name} to cart`)};
+    return{text:`Here's the comparison between <strong>${prods.map(p=>p.name).join('</strong> and <strong>')}</strong>:`,speak:`Great, let me compare the ${prods.map(p=>p.name).join(' and the ')} for you. I'll put them side by side so you can see the key differences.`,component:_renderComparison(prods),followUps:prods.map(p=>`Add ${p.name} to cart`)};
   }
 
   // 6. Product detail (requires a product name in the text to avoid catching generic "show me X" queries)
@@ -2038,7 +2038,7 @@ function _buildResponse(text,attachments){
     const p=_findProduct(t)||(_ctx.activeId&&PL_P[_ctx.activeId]);
     if(!p)return{text:'Which model would you like more info on?',speak:'Which model would you like more info on?',products:PL_LIST.slice(0,4),followUps:['Apex Pro','Ridge X','Velocity V3','Canyon XT']};
     _ctx.activeId=p.id;
-    return{text:`Here are the full details on the <strong>${p.name}</strong>:`,speak:`Details on the ${p.name}: ${p.det}`,component:_renderDetail(p),followUps:[`Add ${p.name} to cart`,`Compare with other models`,'Help with sizing']};
+    return{text:`Here are the full details on the <strong>${p.name}</strong>:`,speak:`Let me tell you about the ${p.name}. ${p.det} At ${p.ps}, it's one of our ${p.tags.includes('bestseller')?'most popular models':'newest arrivals'}. Would you like to add it to your cart?`,component:_renderDetail(p),followUps:[`Add ${p.name} to cart`,`Compare with other models`,'Help with sizing']};
   }
 
   // 7. Gift continuation
@@ -2055,10 +2055,14 @@ function _buildResponse(text,attachments){
     if(_ctx.activity==='running'&&_ctx.recipientLevel){
       const _lp={beginner:PL_P.stride,intermediate:PL_P.apex,advanced:PL_P.apex};
       const _alt={beginner:PL_P.apex,intermediate:PL_P.stride,advanced:PL_P.canyon};
-      const _ll={beginner:'a comfortable, forgiving trainer, great for first-time runners',intermediate:'a high-performance daily trainer with ZoomX responsive foam',advanced:'the top road shoe, paired with Canyon XT for all-terrain versatility'};
+      const _sp={
+        beginner:`For a beginner runner, the Stride S1 is a wonderful choice. It has a wide roomy toe box that keeps your feet comfortable from the very first run, and the cushioning is gentle enough to protect your joints as you build up mileage. I'm also showing you the Apex Pro as a great next step when training gets more serious.`,
+        intermediate:`For a regular runner, the Apex Pro is really hard to beat. The ZoomX foam gives you incredible energy return with every stride and it feels fast without being harsh. I'm also showing the Stride S1, which is more relaxed and comfortable for easy runs.`,
+        advanced:`For an advanced runner, the Apex Pro is our top road shoe, with ZoomX foam that delivers serious performance on asphalt. I paired it with the Canyon XT, which is waterproof and grippy for off-road runs when you want a change of terrain. Two very different shoes, both excellent.`
+      };
       const p=_lp[_ctx.recipientLevel],alt=_alt[_ctx.recipientLevel];
       const prods=[p,alt];_ctx.recentIds=prods.map(x=>x.id);_ctx.activeId=p.id;
-      return{text:`For a <strong>${_ctx.recipientLevel} runner</strong>, my top picks are the <strong>${p.name}</strong> and <strong>${alt.name}</strong>:`,speak:`For a ${_ctx.recipientLevel} runner I recommend the ${p.name} and the ${alt.name}.`,products:prods,followUps:[`Details on ${p.name}`,`Compare ${p.name} and ${alt.name}`,`Add ${p.name} to cart`]};
+      return{text:`For a <strong>${_ctx.recipientLevel} runner</strong>, my top picks are the <strong>${p.name}</strong> and <strong>${alt.name}</strong>:`,speak:_sp[_ctx.recipientLevel],products:prods,followUps:[`Details on ${p.name}`,`Compare ${p.name} and ${alt.name}`,`Add ${p.name} to cart`]};
     }
     // Running but no level yet → ask
     if(_ctx.activity==='running'){
@@ -2111,7 +2115,7 @@ function _buildResponse(text,attachments){
 
   // 9. Greeting
   if(/^(hi|hello|hey|good|howdy|ciao|salve)\b/i.test(t)){
-    return{text:'Hi! I\'m PEAK AI. I can help you find the perfect shoe — running, trail, racing or outdoor. Where do we start?',speak:'Hi! I can help you find the perfect shoe.',followUps:['Road running','Trail & mountain','I have a race','Looking for a gift']};
+    return{text:'Hi! I\'m PEAK AI. I can help you find the perfect shoe — running, trail, racing or outdoor. Where do we start?',speak:"Hi there! I'm PEAK AI, your personal shopping assistant here at PEAKLINE. I can help you find the perfect shoe whether you're running on road, hitting the trails, racing, or exploring the outdoors. Just tell me what you're looking for and I'll guide you.",followUps:['Road running','Trail & mountain','I have a race','Looking for a gift']};
   }
 
   // 10. Budget
@@ -2128,7 +2132,7 @@ function _buildResponse(text,attachments){
   if(/\b(new|latest|arrival|recent|just\s*in|novit)\b/.test(t)){
     const prods=PL_LIST.filter(p=>p.tags.includes('new-arrival'));
     _ctx.recentIds=prods.map(p=>p.id);
-    return{text:`Here are the <strong>latest arrivals</strong> from PEAKLINE — ${prods.length} new models:`,speak:`Latest PEAKLINE arrivals: ${prods.map(p=>p.name).join(', ')}.`,products:prods,followUps:['Details on Velocity V3','Details on Canyon XT','Compare new arrivals']};
+    return{text:`Here are the <strong>latest arrivals</strong> from PEAKLINE — ${prods.length} new models:`,speak:`Here are our latest arrivals at PEAKLINE. We've just brought in ${prods.length} new models, and honestly they're some of our best yet. Have a look and let me know if any catch your eye.`,products:prods,followUps:['Details on Velocity V3','Details on Canyon XT','Compare new arrivals']};
   }
 
   // 12. Size help
@@ -2143,16 +2147,17 @@ function _buildResponse(text,attachments){
     const _alt={beginner:PL_P.apex,intermediate:PL_P.stride,advanced:PL_P.canyon};
     const p=_lp[level],alt=_alt[level];
     const prods=[p,alt];_ctx.recentIds=prods.map(x=>x.id);_ctx.activeId=p.id;
-    return{text:`For an <strong>${level} runner</strong>, here are my top picks:`,speak:`For an ${level} runner, I recommend the ${p.name} and the ${alt.name}.`,products:prods,followUps:[`Details on ${p.name}`,`Compare ${p.name} and ${alt.name}`,`Add ${p.name} to cart`]};
+    const _gsp={beginner:`For a beginner, the Stride S1 is a great place to start. It's comfortable, forgiving, and the wide toe box means your feet won't feel cramped even on longer runs. The Apex Pro is there as a step up when you're ready for more performance.`,intermediate:`For an intermediate runner, the Apex Pro is a fantastic choice. That ZoomX foam makes every run feel more efficient, and it's the kind of shoe that genuinely makes you want to go further. I've paired it with the Stride S1 for more relaxed training days.`,advanced:`For an advanced runner, the Apex Pro is our top road performer, built for serious mileage and speed. Alongside it I'd suggest the Canyon XT, which adds waterproof Gore-Tex protection and trail grip for those days when you want to get off the pavement.`};
+    return{text:`For an <strong>${level} runner</strong>, here are my top picks:`,speak:_gsp[level],products:prods,followUps:[`Details on ${p.name}`,`Compare ${p.name} and ${alt.name}`,`Add ${p.name} to cart`]};
   }
 
   // 13. Categories
   const catMap={
-    running:{r:/\b(running|road|asphalt|pavement|jogging|5k|10k|marathon|long\s*distance)\b/,prods:[PL_P.apex,PL_P.stride],text:'For road running I have two picks. The <strong>Apex Pro</strong> (€189) — ZoomX foam, top for advanced runners. The <strong>Stride S1</strong> (€129) — wide toe box, ideal for long distances and beginners.',speak:'For road running: the Apex Pro at 189 euros with ZoomX foam for advanced runners, and the Stride S1 at 129 euros with wide toe box for long distances.',followUps:['Details on Apex Pro','Details on Stride S1','Compare both models','Help with sizing']},
-    trail:{r:/\b(trail|path|dirt|mud|forest|vibram|mountain)\b/,prods:[PL_P.ridge,PL_P.canyon],text:'For trail I have two picks. The <strong>Ridge X</strong> (€159) — Vibram Megagrip, meta-rocker. The <strong>Canyon XT</strong> (€199) — waterproof Gore-Tex, 5mm lugs for wet weather.',speak:'For trail: the Ridge X at 159 euros with Vibram sole, and the Canyon XT at 199 euros with Gore-Tex for uncertain weather.',followUps:['Details on Ridge X','Details on Canyon XT','Compare trail shoes','Which for wet weather?']},
-    racing:{r:/\b(race|racing|competition|marathon|sprint|carbon|competitive)\b/,prods:[PL_P.velocity,PL_P.flash],text:'For racing I have two weapons. The <strong>Velocity V3</strong> (€229) — full-length carbon plate, our flagship. The <strong>Flash 2.0</strong> (€175) — ultra-light road racer, great for 5K to half marathon.',speak:'For racing: the Velocity V3 at 229 euros with carbon plate, and the Flash 2.0 at 175 euros ultra-light road racer.',followUps:['Details on Velocity V3','Details on Flash 2.0','Compare racing shoes','Help with sizing']},
-    outdoor:{r:/\b(outdoor|trekk|hiking|altitude|hut|gore.?tex|alpine)\b/,prods:[PL_P.summit,PL_P.canyon],text:'For outdoor hiking I have two picks. The <strong>Summit Lite</strong> (€249) — mid-cut, OrthoShield waterproof, ankle support. The <strong>Canyon XT</strong> (€199) — Gore-Tex, 5mm lugs, more versatile.',speak:'For outdoor: the Summit Lite at 249 euros mid-cut with OrthoShield, and the Canyon XT at 199 euros with Gore-Tex.',followUps:['Details on Summit Lite','Details on Canyon XT','Compare outdoor','Which for rain and mud?']},
-    training:{r:/\b(trainin|gym|crossfit|fitness|cross\s*training|workout|weights|functional)\b/,prods:[PL_P.power],text:'For cross training in the gym I recommend the <strong>Power Cross</strong> (€99, on sale). Flat sole for stability in weightlifting, lateral support, durable build.',speak:'For the gym I recommend the Power Cross at 99 euros, with flat sole for weights and lateral support.',followUps:['Details on Power Cross','Add Power Cross to cart','Show all products']},
+    running:{r:/\b(running|road|asphalt|pavement|jogging|5k|10k|marathon|long\s*distance)\b/,prods:[PL_P.apex,PL_P.stride],text:'For road running I have two picks. The <strong>Apex Pro</strong> (€189) — ZoomX foam, top for advanced runners. The <strong>Stride S1</strong> (€129) — wide toe box, ideal for long distances and beginners.',speak:"For road running, my two picks are the Apex Pro and the Stride S1. The Apex Pro has incredible ZoomX foam that really propels you forward, great for experienced runners. The Stride S1 is more forgiving with a wide roomy toe box, perfect for long distances or if you're just getting started.",followUps:['Details on Apex Pro','Details on Stride S1','Compare both models','Help with sizing']},
+    trail:{r:/\b(trail|path|dirt|mud|forest|vibram|mountain)\b/,prods:[PL_P.ridge,PL_P.canyon],text:'For trail I have two picks. The <strong>Ridge X</strong> (€159) — Vibram Megagrip, meta-rocker. The <strong>Canyon XT</strong> (€199) — waterproof Gore-Tex, 5mm lugs for wet weather.',speak:"For trail running, I'd look at the Ridge X and the Canyon XT. The Ridge X has incredible Vibram grip that handles any terrain with confidence, and a meta-rocker that keeps you moving smoothly. The Canyon XT adds Gore-Tex waterproofing, so if you run in wet or variable conditions, it's a brilliant choice.",followUps:['Details on Ridge X','Details on Canyon XT','Compare trail shoes','Which for wet weather?']},
+    racing:{r:/\b(race|racing|competition|marathon|sprint|carbon|competitive)\b/,prods:[PL_P.velocity,PL_P.flash],text:'For racing I have two weapons. The <strong>Velocity V3</strong> (€229) — full-length carbon plate, our flagship. The <strong>Flash 2.0</strong> (€175) — ultra-light road racer, great for 5K to half marathon.',speak:"For racing, these are our two best options. The Velocity V3 is our flagship, with a full carbon plate that gives you serious propulsion, perfect for marathon pace. The Flash 2.0 is lighter and more versatile, great from 5K all the way to a half marathon.",followUps:['Details on Velocity V3','Details on Flash 2.0','Compare racing shoes','Help with sizing']},
+    outdoor:{r:/\b(outdoor|trekk|hiking|altitude|hut|gore.?tex|alpine)\b/,prods:[PL_P.summit,PL_P.canyon],text:'For outdoor hiking I have two picks. The <strong>Summit Lite</strong> (€249) — mid-cut, OrthoShield waterproof, ankle support. The <strong>Canyon XT</strong> (€199) — Gore-Tex, 5mm lugs, more versatile.',speak:"For outdoor hiking, the Summit Lite is fantastic, it's mid-cut so you get great ankle support, and the OrthoShield membrane keeps your feet dry no matter what the weather does. The Canyon XT is a bit more versatile, perfect if you want a shoe that works for both trail running and light hiking.",followUps:['Details on Summit Lite','Details on Canyon XT','Compare outdoor','Which for rain and mud?']},
+    training:{r:/\b(trainin|gym|crossfit|fitness|cross\s*training|workout|weights|functional)\b/,prods:[PL_P.power],text:'For cross training in the gym I recommend the <strong>Power Cross</strong> (€99, on sale). Flat sole for stability in weightlifting, lateral support, durable build.',speak:"For gym training, the Power Cross is your best friend. It has a flat stable sole that's ideal for weightlifting, great lateral support for agility work, and it's built to last. And at 99 euros, it's genuinely great value.",followUps:['Details on Power Cross','Add Power Cross to cart','Show all products']},
   };
   for(const[k,cat] of Object.entries(catMap)){
     if(cat.r.test(t)){
@@ -2167,7 +2172,7 @@ function _buildResponse(text,attachments){
 
 function _respFallback(){
   const prods=PL_LIST.filter(p=>p.tags.includes('bestseller'));
-  return{text:'I didn\'t quite get that — here are our <strong>bestsellers</strong> to get you started:',speak:'Here are our best-selling models.',products:prods,followUps:['Road running','Trail & mountain','I have a race','Looking for a gift']};
+  return{text:'I didn\'t quite get that — here are our <strong>bestsellers</strong> to get you started:',speak:"I didn't quite catch that, but let me show you some of our most popular models to get you started. Take a look and just tell me which direction interests you most.",products:prods,followUps:['Road running','Trail & mountain','I have a race','Looking for a gift']};
 }
 
 function _findProduct(text){
