@@ -1629,28 +1629,30 @@ function _plSpeak(text){
   window.speechSynthesis.cancel();
   const plain=text.replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&nbsp;/g,' ')
     .replace(/[👟🏃🏔️🌿🚀📦📏🥇🎁✨•→←]/g,' ')
-    .replace(/€(\d)/g,'$1 euro').replace(/\s+/g,' ').trim().slice(0,400);
+    .replace(/€(\d)/g,'$1 euro').replace(/\s+/g,' ').trim().slice(0,500);
   if(!plain)return;
-  const utt=new SpeechSynthesisUtterance(plain);
-  utt.lang='en-US';utt.rate=0.93;utt.pitch=1.0;
-  const go=()=>{
-    const voices=window.speechSynthesis.getVoices();
-    // Priority: natural/neural/premium voices first
-    const pref=['Google US English','Microsoft Aria Online (Natural) - English (United States)','Microsoft Jenny Online (Natural) - English (United States)','Microsoft Aria - English (United States)','Samantha (Premium)','Nicky (Premium)','Samantha','Nicky','Karen (Premium)','Karen','Google UK English Female'];
-    let v=null;
-    for(const name of pref){v=voices.find(x=>x.name===name);if(v)break;}
-    if(!v)v=voices.find(x=>x.lang==='en-US'&&!x.localService)||voices.find(x=>x.lang==='en-US')||voices.find(x=>x.lang.startsWith('en-'))||voices.find(x=>x.lang.startsWith('en'));
-    if(!v){if(_plMode==='voice'&&_plVoiceState!=='idle'){_plSetVoiceState('listening');_startSR(true);}return;}
-    utt.voice=v;
-    if(_plMode==='voice'){
-      _plSetVoiceState('speaking');
-      const keepAlive=setInterval(()=>{if(!window.speechSynthesis.speaking){clearInterval(keepAlive);}else{window.speechSynthesis.pause();window.speechSynthesis.resume();}},10000);
-      utt.onend=()=>{clearInterval(keepAlive);if(_plMode==='voice'&&_plVoiceState==='speaking'){_plSetVoiceState('listening');_startSR(true);}};
-    }
-    window.speechSynthesis.speak(utt);
+  // Chrome needs a small gap after cancel() before speak() fires reliably
+  setTimeout(()=>{
+    const utt=new SpeechSynthesisUtterance(plain);
+    utt.lang='en-US';utt.rate=0.93;utt.pitch=1.0;
+    const go=()=>{
+      const voices=window.speechSynthesis.getVoices();
+      const pref=['Google US English','Microsoft Aria Online (Natural) - English (United States)','Microsoft Jenny Online (Natural) - English (United States)','Microsoft Aria - English (United States)','Samantha (Premium)','Nicky (Premium)','Samantha','Nicky','Karen (Premium)','Karen','Google UK English Female'];
+      let v=null;
+      for(const name of pref){v=voices.find(x=>x.name===name);if(v)break;}
+      if(!v)v=voices.find(x=>x.lang==='en-US'&&!x.localService)||voices.find(x=>x.lang==='en-US')||voices.find(x=>x.lang.startsWith('en-'))||voices.find(x=>x.lang.startsWith('en'));
+      if(!v){if(_plMode==='voice'&&_plVoiceState!=='idle'){_plSetVoiceState('listening');_startSR(true);}return;}
+      utt.voice=v;
+      if(_plMode==='voice'){
+        _plSetVoiceState('speaking');
+        const keepAlive=setInterval(()=>{if(!window.speechSynthesis.speaking){clearInterval(keepAlive);}else{window.speechSynthesis.pause();window.speechSynthesis.resume();}},10000);
+        utt.onend=()=>{clearInterval(keepAlive);if(_plMode==='voice'&&_plVoiceState==='speaking'){_plSetVoiceState('listening');_startSR(true);}};
+      }
+      window.speechSynthesis.speak(utt);
   };
-  if(window.speechSynthesis.getVoices().length>0)go();
-  else window.speechSynthesis.addEventListener('voiceschanged',go,{once:true});
+    if(window.speechSynthesis.getVoices().length>0)go();
+    else window.speechSynthesis.addEventListener('voiceschanged',go,{once:true});
+  },60);
 }
 
 // ── Voice mode ──
@@ -1993,7 +1995,7 @@ function _buildResponse(text,attachments){
   // 3. Cart view
   if(/\b(cart|bag|checkout|proceed|payment|order)\b/.test(t)&&_ctx.cart.length){
     const comp=_renderCart(_ctx.cart,null);
-    return{text:`Here's your cart with ${_ctx.cart.length} ${_ctx.cart.length===1?'item':'items'}:`,speak:`Your cart has ${_ctx.cart.length} items. Subtotal is ${_ctx.cart.reduce((s,i)=>s+i.price*i.qty,0)} euros.`,component:comp,followUps:['Add more products','Clear cart']};
+    return{text:`Here's your cart with ${_ctx.cart.length} ${_ctx.cart.length===1?'item':'items'}:`,speak:`Your cart has ${_ctx.cart.length} items, with a subtotal of ${_ctx.cart.reduce((s,i)=>s+i.price*i.qty,0)} euros.`,component:comp,followUps:['Add more products','Clear cart']};
   }
 
   // 4. Add to cart
@@ -2010,7 +2012,7 @@ function _buildResponse(text,attachments){
     }
     _ctx.pendingAddId=p.id;
     const sizeList=p.sizes.map(s=>`<button class="pl-chip" onclick="_plHandleChip('Size ${s}')">${s}</button>`).join('');
-    return{text:`Great choice! <strong>${p.name}</strong> — what size do you wear?`,speak:`Great choice for the ${p.name}. What size do you wear?`,component:`<div class="pl-chips">${sizeList}</div>`,followUps:[]};
+    return{text:`Great choice! <strong>${p.name}</strong> — what size do you wear?`,speak:`Great choice for the ${p.name} — what size do you wear?`,component:`<div class="pl-chips">${sizeList}</div>`,followUps:[]};
   }
 
   // 5. Comparison
@@ -2088,14 +2090,14 @@ function _buildResponse(text,attachments){
     if(_da){
       _ctx.activity=_da;
       if(_da==='running'){
-        return{text:`A gift for your <strong>${_ctx.recipient}</strong> — great idea! 🎁<br>To pick the perfect running shoe, what's ${_ctx.recipientPoss} experience level?`,speak:`Gift for your ${_ctx.recipient}. What's ${_ctx.recipientPoss} experience level as a runner?`,followUps:['Beginner — just starting out','Intermediate — runs regularly','Advanced — races and marathons']};
+        return{text:`A gift for your <strong>${_ctx.recipient}</strong> — great idea! 🎁<br>To pick the perfect running shoe, what's ${_ctx.recipientPoss} experience level?`,speak:`Gift for your ${_ctx.recipient} — what's ${_ctx.recipientPoss} experience level as a runner?`,followUps:['Beginner — just starting out','Intermediate — runs regularly','Advanced — races and marathons']};
       }
       const _ap={trail:[PL_P.ridge,PL_P.canyon],racing:[PL_P.velocity,PL_P.flash],outdoor:[PL_P.summit,PL_P.canyon],training:[PL_P.power]};
       const _prods=_ap[_da]||[PL_P.apex,PL_P.stride];
       _ctx.recentIds=_prods.map(p=>p.id);
       return{text:`Great gift choice! Here are the best <strong>${_da}</strong> shoes for your ${_ctx.recipient}:`,speak:`Best ${_da} shoes for your ${_ctx.recipient}.`,products:_prods,followUps:[`Details on ${_prods[0].name}`,`Compare ${_prods.map(p=>p.name).join(' and ')}`,`Add ${_prods[0].name} to cart`]};
     }
-    return{text:`A gift for your <strong>${_ctx.recipient}</strong> — great! What sport or activity does ${_ctx.recipientSubj} do?`,speak:`Gift for your ${_ctx.recipient}. What sport or activity does ${_ctx.recipientSubj} do?`,followUps:['Road running 🏃','Trail & mountain 🏔️','Gym & training 💪','Racing & competition 🥇']};
+    return{text:`A gift for your <strong>${_ctx.recipient}</strong> — great! What sport or activity does ${_ctx.recipientSubj} do?`,speak:`Gift for your ${_ctx.recipient} — what sport or activity does ${_ctx.recipientSubj} do?`,followUps:['Road running 🏃','Trail & mountain 🏔️','Gym & training 💪','Racing & competition 🥇']};
   }
 
   // 9. Greeting
@@ -2109,7 +2111,7 @@ function _buildResponse(text,attachments){
     const budget=parseInt(bm[1]);
     const prods=PL_LIST.filter(p=>p.price<=budget).sort((a,b)=>b.price-a.price).slice(0,4);
     _ctx.budget=budget;_ctx.recentIds=prods.map(p=>p.id);
-    if(!prods.length)return{text:`No models under €${budget}. Our most affordable option is the <strong>Power Cross</strong> at €99.`,speak:`No models under ${budget} euros. The most affordable is the Power Cross at 99 euros.`,products:[PL_P.power],followUps:['Show all products']};
+    if(!prods.length)return{text:`No models under €${budget}. Our most affordable option is the <strong>Power Cross</strong> at €99.`,speak:`No models under ${budget} euros — the most affordable is the Power Cross at 99 euros.`,products:[PL_P.power],followUps:['Show all products']};
     return{text:`Here are ${prods.length} models under <strong>€${budget}</strong>:`,speak:`Found ${prods.length} models under ${budget} euros.`,products:prods,followUps:prods.map(p=>`Details on ${p.name}`)};
   }
 
