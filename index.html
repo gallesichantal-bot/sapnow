@@ -1585,7 +1585,8 @@ let _plCamStream=null;
 
 // Conversation context
 let _ctx={
-  intent:null, recipient:null, budget:null, activity:null, recipientLevel:null,
+  intent:null, recipient:null, recipientPro:'them', recipientPoss:'their', recipientSubj:'they', recipientLevel:null,
+  budget:null, activity:null,
   activeId:null, recentIds:[], pendingAddId:null, pendingSize:null,
   cart:[], turnCount:0
 };
@@ -2050,7 +2051,7 @@ function _buildResponse(text,attachments){
     }
     // Running but no level yet → ask
     if(_ctx.activity==='running'){
-      return{text:`To pick the best running shoe for your ${_ctx.recipient||'recipient'}, what's their experience level?`,speak:`What level runner is your ${_ctx.recipient||'recipient'}?`,followUps:['Beginner — just starting out','Intermediate — runs regularly','Advanced — races and marathons']};
+      return{text:`To pick the best running shoe for your ${_ctx.recipient||'recipient'}, what's ${_ctx.recipientPoss} experience level?`,speak:`What level runner is your ${_ctx.recipient||'recipient'}?`,followUps:['Beginner — just starting out','Intermediate — runs regularly','Advanced — races and marathons']};
     }
     // Other activities or budget
     if(_ctx.budget||_ctx.activity){
@@ -2066,7 +2067,7 @@ function _buildResponse(text,attachments){
       const actStr=_ctx.activity?` for ${_ctx.activity}`:'';
       return{text:`Perfect! Here are my gift picks${actStr}${budgetStr}:`,speak:`Found ${prods.length} gift options${actStr}${budgetStr}.`,products:prods,followUps:['See details','Help with sizing','Gift purchase']};
     }
-    return{text:`To find the perfect gift, tell me: <strong>what activity does your ${_ctx.recipient||'recipient'} do?</strong> Any budget in mind?`,speak:`For the gift, tell me what activity they do and if you have a budget.`,followUps:['Road running 🏃','Trail & mountain 🏔️','Gym & training 💪','Budget under €150']};
+    return{text:`To find the perfect gift, tell me: <strong>what activity does ${_ctx.recipientSubj} do?</strong> Any budget in mind?`,speak:`For the gift, tell me what activity ${_ctx.recipientSubj} does and if you have a budget.`,followUps:['Road running 🏃','Trail & mountain 🏔️','Gym & training 💪','Budget under €150']};
   }
 
   // 8. Gift start
@@ -2075,20 +2076,26 @@ function _buildResponse(text,attachments){
     const recMatch=t.match(/(?:for\s+(?:a\s+|my\s+)?)\s*(\w+)/i);
     const skipWords=['gift','pair','shoe','running','great','perfect','for'];
     _ctx.recipient=recMatch&&!skipWords.includes(recMatch[1].toLowerCase())?recMatch[1]:'them';
+    // set pronouns based on recipient word
+    const _masc=/husband|brother|dad|father|son|boyfriend|guy|man|boy/i;
+    const _fem=/wife|sister|mom|mother|daughter|girlfriend|girl|woman/i;
+    if(_masc.test(t)){_ctx.recipientPro='him';_ctx.recipientPoss='his';_ctx.recipientSubj='he';}
+    else if(_fem.test(t)){_ctx.recipientPro='her';_ctx.recipientPoss='her';_ctx.recipientSubj='she';}
+    else{_ctx.recipientPro='them';_ctx.recipientPoss='their';_ctx.recipientSubj='they';}
     // detect activity in same sentence
     const _amap={running:/running|road|jogging|marathon/,trail:/trail|mountain|path/,racing:/race|competi|carbon/,outdoor:/outdoor|trek|hik/,training:/gym|training|crossfit/};
     let _da=null;for(const[k,r] of Object.entries(_amap)){if(r.test(t)){_da=k;break;}}
     if(_da){
       _ctx.activity=_da;
       if(_da==='running'){
-        return{text:`A gift for your <strong>${_ctx.recipient}</strong> — great idea! 🎁<br>To pick the perfect running shoe, what's their experience level?`,speak:`Gift for your ${_ctx.recipient}. What's their experience level as a runner?`,followUps:['Beginner — just starting out','Intermediate — runs regularly','Advanced — races and marathons']};
+        return{text:`A gift for your <strong>${_ctx.recipient}</strong> — great idea! 🎁<br>To pick the perfect running shoe, what's ${_ctx.recipientPoss} experience level?`,speak:`Gift for your ${_ctx.recipient}. What's ${_ctx.recipientPoss} experience level as a runner?`,followUps:['Beginner — just starting out','Intermediate — runs regularly','Advanced — races and marathons']};
       }
       const _ap={trail:[PL_P.ridge,PL_P.canyon],racing:[PL_P.velocity,PL_P.flash],outdoor:[PL_P.summit,PL_P.canyon],training:[PL_P.power]};
       const _prods=_ap[_da]||[PL_P.apex,PL_P.stride];
       _ctx.recentIds=_prods.map(p=>p.id);
       return{text:`Great gift choice! Here are the best <strong>${_da}</strong> shoes for your ${_ctx.recipient}:`,speak:`Best ${_da} shoes for your ${_ctx.recipient}.`,products:_prods,followUps:[`Details on ${_prods[0].name}`,`Compare ${_prods.map(p=>p.name).join(' and ')}`,`Add ${_prods[0].name} to cart`]};
     }
-    return{text:`A gift for your <strong>${_ctx.recipient}</strong> — great! What sport or activity do they do?`,speak:`Gift for your ${_ctx.recipient}. What sport or activity do they do?`,followUps:['Road running 🏃','Trail & mountain 🏔️','Gym & training 💪','Racing & competition 🥇']};
+    return{text:`A gift for your <strong>${_ctx.recipient}</strong> — great! What sport or activity does ${_ctx.recipientSubj} do?`,speak:`Gift for your ${_ctx.recipient}. What sport or activity does ${_ctx.recipientSubj} do?`,followUps:['Road running 🏃','Trail & mountain 🏔️','Gym & training 💪','Racing & competition 🥇']};
   }
 
   // 9. Greeting
