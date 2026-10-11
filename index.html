@@ -1974,7 +1974,7 @@ function _cartAdd(id,size,color){
 function _buildResponse(text,attachments){
   _ctx.turnCount++;
   // Italian preprocessing
-  const _IT=[[/\bmarito\b/gi,'husband'],[/\bmoglie\b/gi,'wife'],[/\bscarpe da corsa\b/gi,'running shoes'],[/\bcorsa\b/gi,'running'],[/\bcorrere\b/gi,'running'],[/\bscarpe\b/gi,'shoes'],[/\bconfrontar[ei]\b/gi,'compare'],[/\bconfronta\b/gi,'compare'],[/\baggiungi(?:\s+al)?\s+carrello\b/gi,'add to cart'],[/\bcarrello\b/gi,'cart'],[/\bsentiero\b/gi,'trail'],[/\btaglia\b/gi,'size'],[/\bprincipiante\b/gi,'beginner'],[/\bavanzat[oa]\b/gi,'advanced'],[/\bintermediat[oa]\b/gi,'intermediate'],[/\bregalo\b/gi,'gift'],[/\baggiungi\b/gi,'add'],[/\bmio\s+marito\b/gi,'my husband'],[/\bmia\s+moglie\b/gi,'my wife']];
+  const _IT=[[/\bmarito\b/gi,'husband'],[/\bmoglie\b/gi,'wife'],[/\bscarpe da corsa\b/gi,'running shoes'],[/\bcorsa\b/gi,'running'],[/\bcorrere\b/gi,'running'],[/\bscarpe\b/gi,'shoes'],[/\bconfrontar[ei]\b/gi,'compare'],[/\bconfronta\b/gi,'compare'],[/\baggiungi(?:\s+al)?\s+carrello\b/gi,'add to cart'],[/\bcarrello\b/gi,'cart'],[/\bsentiero\b/gi,'trail'],[/\btaglia\b/gi,'size'],[/\bprincipiante\b/gi,'beginner'],[/\bavanzat[oa]\b/gi,'advanced'],[/\bintermediat[oa]\b/gi,'intermediate'],[/\bregalo\b/gi,'gift'],[/\baggiungi\b/gi,'add'],[/\bmio\s+marito\b/gi,'my husband'],[/\bmia\s+moglie\b/gi,'my wife'],[/\buomo\b/gi,'men'],[/\bdonna\b/gi,'women'],[/\blivello\b/gi,'level']];
   let _n=text;_IT.forEach(([r,s])=>{_n=_n.replace(r,s);});
   const t=_n.toLowerCase().trim();
 
@@ -2053,12 +2053,12 @@ function _buildResponse(text,attachments){
     else if(/advanced|marathon|race|competi|experienced|serious|fast/i.test(t))_ctx.recipientLevel='advanced';
     // Running + level → specific product recommendation
     if(_ctx.activity==='running'&&_ctx.recipientLevel){
-      const _lp={beginner:PL_P.stride,intermediate:PL_P.apex,advanced:PL_P.velocity};
-      const _alt={beginner:PL_P.apex,intermediate:PL_P.stride,advanced:PL_P.flash};
-      const _ll={beginner:'a comfortable, forgiving trainer — great for first-time runners',intermediate:'a high-performance daily trainer with ZoomX responsive foam',advanced:'a full carbon-plate racing shoe — built to go fast'};
+      const _lp={beginner:PL_P.stride,intermediate:PL_P.apex,advanced:PL_P.apex};
+      const _alt={beginner:PL_P.apex,intermediate:PL_P.stride,advanced:PL_P.canyon};
+      const _ll={beginner:'a comfortable, forgiving trainer, great for first-time runners',intermediate:'a high-performance daily trainer with ZoomX responsive foam',advanced:'the top road shoe, paired with Canyon XT for all-terrain versatility'};
       const p=_lp[_ctx.recipientLevel],alt=_alt[_ctx.recipientLevel];
       const prods=[p,alt];_ctx.recentIds=prods.map(x=>x.id);_ctx.activeId=p.id;
-      return{text:`For a <strong>${_ctx.recipientLevel} runner</strong>, my top pick is the <strong>${p.name}</strong> — ${_ll[_ctx.recipientLevel]}:`,speak:`For a ${_ctx.recipientLevel} runner I recommend the ${p.name}.`,products:prods,followUps:[`Details on ${p.name}`,`Compare ${prods.map(x=>x.name).join(' and ')}`,`Add ${p.name} to cart`]};
+      return{text:`For a <strong>${_ctx.recipientLevel} runner</strong>, my top picks are the <strong>${p.name}</strong> and <strong>${alt.name}</strong>:`,speak:`For a ${_ctx.recipientLevel} runner I recommend the ${p.name} and the ${alt.name}.`,products:prods,followUps:[`Details on ${p.name}`,`Compare ${p.name} and ${alt.name}`,`Add ${p.name} to cart`]};
     }
     // Running but no level yet → ask
     if(_ctx.activity==='running'){
@@ -2134,6 +2134,16 @@ function _buildResponse(text,attachments){
   // 12. Size help
   if(/\b(size|sizing|fit|wide|narrow|foot|measurement)\b/.test(t)){
     return{text:`<strong>PEAKLINE Size Guide</strong><br><br>We use EU sizing. General rules:<ul style="margin:6px 0 0 14px;line-height:1.8"><li>Wide toe box → go up one size</li><li>Narrow feet → standard size</li><li>Trail activity → consider half size up</li></ul><br>Want help choosing a size for a specific model?`,speak:'For sizing: if you have wide feet, go up one size. For trail, half a size up is recommended.',followUps:['Size for Apex Pro','Size for Ridge X','Size for racing shoes']};
+  }
+
+  // 12b. Gender + level direct query
+  if(/\b(men|man|male|women|woman|female)\b/.test(t)&&/\b(advanced|intermediate|beginner)\b/.test(t)){
+    const level=/advanced/i.test(t)?'advanced':/intermediate/i.test(t)?'intermediate':'beginner';
+    const _lp={beginner:PL_P.stride,intermediate:PL_P.apex,advanced:PL_P.apex};
+    const _alt={beginner:PL_P.apex,intermediate:PL_P.stride,advanced:PL_P.canyon};
+    const p=_lp[level],alt=_alt[level];
+    const prods=[p,alt];_ctx.recentIds=prods.map(x=>x.id);_ctx.activeId=p.id;
+    return{text:`For an <strong>${level} runner</strong>, here are my top picks:`,speak:`For an ${level} runner, I recommend the ${p.name} and the ${alt.name}.`,products:prods,followUps:[`Details on ${p.name}`,`Compare ${p.name} and ${alt.name}`,`Add ${p.name} to cart`]};
   }
 
   // 13. Categories
