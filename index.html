@@ -1631,10 +1631,14 @@ function _plSpeak(text){
     .replace(/€(\d)/g,'$1 euro').replace(/\s+/g,' ').trim().slice(0,400);
   if(!plain)return;
   const utt=new SpeechSynthesisUtterance(plain);
-  utt.lang='en-US';utt.rate=1.0;utt.pitch=1.0;
+  utt.lang='en-US';utt.rate=0.93;utt.pitch=1.0;
   const go=()=>{
     const voices=window.speechSynthesis.getVoices();
-    const v=voices.find(v=>v.lang==='en-US')||voices.find(v=>v.lang.startsWith('en-'))||voices.find(v=>v.lang.startsWith('en'));
+    // Priority: natural/neural/premium voices first
+    const pref=['Google US English','Microsoft Aria Online (Natural) - English (United States)','Microsoft Jenny Online (Natural) - English (United States)','Microsoft Aria - English (United States)','Samantha (Premium)','Nicky (Premium)','Samantha','Nicky','Karen (Premium)','Karen','Google UK English Female'];
+    let v=null;
+    for(const name of pref){v=voices.find(x=>x.name===name);if(v)break;}
+    if(!v)v=voices.find(x=>x.lang==='en-US'&&!x.localService)||voices.find(x=>x.lang==='en-US')||voices.find(x=>x.lang.startsWith('en-'))||voices.find(x=>x.lang.startsWith('en'));
     if(!v){if(_plMode==='voice'&&_plVoiceState!=='idle'){_plSetVoiceState('listening');_startSR(true);}return;}
     utt.voice=v;
     if(_plMode==='voice'){
