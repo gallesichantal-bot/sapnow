@@ -1598,7 +1598,16 @@ function plToggle(){
   p.classList.toggle('open',_plOpen);
   document.getElementById('pl-ico-chat').style.display=_plOpen?'none':'block';
   document.getElementById('pl-ico-close').style.display=_plOpen?'block':'none';
-  if(!_plOpen){_plStopVoice();_plMinimized=false;_plExpanded=false;p.classList.remove('minimized','expanded');}
+  if(!_plOpen){
+    _plStopVoice();_plMinimized=false;_plExpanded=false;p.classList.remove('minimized','expanded');
+    // reset conversation
+    _ctx={intent:null,recipient:null,recipientPro:'them',recipientPoss:'their',recipientSubj:'they',recipientLevel:null,budget:null,activity:null,activeId:null,recentIds:[],pendingAddId:null,pendingSize:null,cart:[],turnCount:0};
+    _plAttachments=[];_plUpdateAttachStrip();
+    document.getElementById('pl-msgs').innerHTML='';
+    document.getElementById('pl-msgs').classList.remove('on');
+    document.getElementById('pl-welcome').style.display='';
+    document.getElementById('pl-att-strip').innerHTML='';
+  }
 }
 function plExpand(){
   _plExpanded=!_plExpanded;
